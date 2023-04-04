@@ -11,7 +11,13 @@ typedef struct ByteStack {
     void (*pop)(struct ByteStack* self);
     uint8_t (*peek)(struct ByteStack* self);
     void (*free)(struct ByteStack* self);
+    void (*print)(struct ByteStack* self);
 } ByteStack;
+
+typedef struct ByteStack_node {
+    uint8_t value;
+    struct ByteStack_node* next;
+} ByteStack_node;
 
 ByteStack Byte_Stack();
 

@@ -5,36 +5,36 @@
 #include "string.h"
 
 
-typedef enum BigIntType {
-    uint128_t = 16,
-} BigIntType;
 
-typedef struct uint32_Stack {
-    uint32_t node;
-    struct uint32_Stack* next;
-} uint32_Stack;
-
-typedef struct uint8_Stack {
-    uint8_t node;
-    struct uint8_Stack* next;
-} uint8_Stack;
-
-typedef struct uBigInt128_t {
-    uint8_t array[uint128_t];
-    BigIntType type;
-} uBigInt128_t;
+#include "ByteStack.h"
+#include "BigInt.h"
 
 
-uBigInt128_t uBigInt128() {
-    uBigInt128_t integer = {.array = {0}, .type = uint128_t};
+
+
+uint128 BigInt128(ByteStack* bytes) {
+    uint128 integer = {.array = {0}, .type = uint128t};
+    ByteStack_node* node_pointer = bytes -> head;
+    for (uint8_t i = 0; i < uint128t; i++) {
+        integer.array[uint128t - 1 - i] = node_pointer -> value;
+        node_pointer = node_pointer -> next;
+    }
     return integer;
 }
 
+uint16_t BigInt128_add(uint128 * a, uint128 * b, uint128 * c) {
+    uint16_t carry = 0;
+    for (uint8_t i = 0; i < uint128t; i++) {
+        carry = a -> array[i] + b -> array[i] + carry;
+        c -> array[i] = carry;
+        carry >>= 8;
+    }
+    return carry;
+}
 
-int main() {
-
-    uBigInt128_t a = uBigInt128();
-    uBigInt128_t b = uBigInt128();
-
-    return 0;
+void print_bigint(uint128 * a) {
+    for (uint8_t i = 0; i < a -> type; i++) {
+        printf("%02x", a -> array[uint128t - 1 - i]);
+    }
+    printf("\n");
 }

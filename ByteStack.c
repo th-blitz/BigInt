@@ -1,5 +1,6 @@
 #include "stdint.h"
 #include "stdlib.h"
+#include <stdio.h>
 
 #include "ByteStack.h"
 
@@ -7,10 +8,7 @@ static uint8_t byte_mask[8] = {
     0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 
 };
 
-typedef struct ByteStack_node {
-    uint8_t value;
-    struct ByteStack_node* next;
-} ByteStack_node;
+
 
 void append_ByteStack(ByteStack* self, uint8_t value) {
     ByteStack_node* new_node = (ByteStack_node*)malloc(sizeof(ByteStack_node));
@@ -51,6 +49,16 @@ uint8_t update_byte(uint8_t byte, uint8_t bit, uint64_t index) {
     return byte;
 }
 
+void print_ByteStack(ByteStack* self) {
+    ByteStack_node* node_pointer = self->head;
+    uint64_t size = self->size;
+    for (uint64_t i = 0; i < size; i++) {
+        printf("%02x", node_pointer -> value);
+        node_pointer = node_pointer -> next;
+    }
+    printf("\n");
+}
+
 ByteStack Byte_Stack() {
     ByteStack stack = {
         .head = NULL,
@@ -58,7 +66,8 @@ ByteStack Byte_Stack() {
         .append = append_ByteStack,
         .pop = pop_ByteStack,
         .peek = peek_ByteStack,
-        .free = free_ByteStack
+        .free = free_ByteStack,
+        .print = print_ByteStack
     };
     return stack;
 }

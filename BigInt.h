@@ -7,17 +7,23 @@
 #include "ByteStack.h"
 
 typedef enum BigIntType {
-    uint128t = 16,
+    uint128 = 4,
+    uint256 = 8,
+    uint512 = 16,
+    uint1024 = 32,
 } BigIntType;
 
-typedef struct uint128 {
-    uint8_t array[uint128t];
-    BigIntType type;
-} uint128;
 
-uint128 BigInt128(ByteStack* bytes);
-uint16_t BigInt128_add(uint128* a, uint128* b, uint128* c);
-void print_bigint(uint128* a);
+
+typedef struct uint128_t {
+    uint32_t array[uint128];
+    BigIntType type;
+} uint128_t;
+
+
+uint128_t BigInt128(ByteStack* bytes);
+uint16_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c);
+void print_bigint(uint128_t* a);
 
 
 #endif

@@ -1,10 +1,15 @@
+#include <stdio.h>
 
 
 #include "ByteStack.h"
 #include "DecimalArray.h"
-#include "stdio.h"
 #include "BigInt.h"
 
+
+int is_bigendian() {
+    uint32_t number = 1;
+    return *(uint8_t*)&number;
+}
 
 
 int main() {
@@ -28,8 +33,8 @@ int main() {
     b_stack.print(&b_stack);
     
 
-    uint128 aa = BigInt128(&a_stack);
-    uint128 bb = BigInt128(&b_stack);
+    uint128_t aa = BigInt128(&a_stack);
+    uint128_t bb = BigInt128(&b_stack);
 
     print_bigint(&aa);
     print_bigint(&bb);
@@ -39,6 +44,8 @@ int main() {
 
     a_stack.free(&a_stack);
     b_stack.free(&b_stack);
+
+    printf("%d\n", is_bigendian() );
 
     return 0;
 }

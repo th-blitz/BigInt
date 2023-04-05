@@ -33,9 +33,9 @@ uint128_t BigInt128(ByteStack* bytes) {
 
 uint16_t BigInt128_add(uint128_t * a, uint128_t * b, uint128_t * c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint128; i++) {
-        carry = a -> array[uint128 - 1 - i] + b -> array[uint128 - 1 - i] + carry;
-        c -> array[uint128 - 1 - i] = (uint32_t)carry;
+    for (uint8_t i = uint128; i > 0; i--) {
+        carry = a -> array[i - 1] + b -> array[i - 1] + carry;
+        c -> array[i - 1] = (uint32_t)carry;
         carry >>= 32;
     }
     return carry;

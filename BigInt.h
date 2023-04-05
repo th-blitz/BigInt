@@ -22,7 +22,7 @@ typedef struct uint128_t {
 
 
 uint128_t BigInt128(ByteStack* bytes);
-uint16_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c);
+uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c);
 void print_bigint(uint128_t* a);
 
 

@@ -128,7 +128,7 @@ ByteStack decimal_to_binary(DecimalArray a) {
         }
         i += 1;
     }
-    stack.append(&stack, byte);
+    if (byte != 0) { stack.append(&stack, byte); }
     return stack;
 }
 

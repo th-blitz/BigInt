@@ -9,8 +9,8 @@
 
 int main() {
 
-    char a_string[] = "340282366920938463463374607431768211455";
-    char b_string[] = "340282366920938463463374607431768211455";
+    char a_string[] = "340282366920938463463374607431768200014";
+    char b_string[] = "340282366920938463463374607431768200000";
     
     DecimalArray a = decimal_array_from_string(a_string);
     DecimalArray b = decimal_array_from_string(b_string);
@@ -33,21 +33,23 @@ int main() {
     b_stack.print(&b_stack);
     c_stack.print(&c_stack);    
     
-
-    uint128_t aa = BigInt128(&a_stack);
     uint128_t bb = BigInt128(&b_stack);
+    uint128_t aa = BigInt128(&a_stack);
+    
 
     print_bigint(&aa);
     print_bigint(&bb);
 
-    uint32_t carry = BigInt128_add(&aa, &bb, &aa);
-    printf("%08x ", carry);
+    uint32_t carry = BigInt128_subtract(&aa, &bb, &aa);
+    printf("%d ", carry);
     print_bigint(&aa);
 
     
     a_stack.free(&a_stack);
     b_stack.free(&b_stack);
     c_stack.free(&c_stack);
+
+    printf("%d\n", BigInt128_cmp(&aa, &bb));
 
     return 0;
 }

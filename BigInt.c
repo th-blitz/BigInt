@@ -19,30 +19,31 @@ static uint32_t word_mask[4] = {
 };
 
 
-uint128_t BigInt128(ByteStack* bytes) {
+
+
+uint128_t BigInt128() {
+    uint128_t type = {.array = {0}, .type = uint128};
+    return type;
+}
+
+uint256_t BigInt256() {
+    uint256_t type = {.array = {0}, .type = uint256};
+    return type;
+}
+
+
+uint128_t BigInt128_from_bytes(ByteStack* bytes) {
     uint128_t integer = {.array = {0}, .type = uint128};
     ByteStack_node* node_pointer = bytes -> head;
     uint32_t word;
-    if (is_bigendian() == 0) {
-        for (uint8_t i = 0; i < uint128; i++) {
-            word = 0;
-            for (uint8_t j = 0; j < 4; j++) {
-                word <<= 8;
-                word |= (uint32_t)(node_pointer -> value);
-                node_pointer = node_pointer -> next;
-            }
-            integer.array[i] = word;
+    for (uint8_t i = uint128; i > 0; i--) {
+        word = 0;
+        for (uint8_t j = 0; j < 4; j++) {
+            word <<= 8;
+            word |= (uint32_t)(node_pointer -> value);
+            node_pointer = node_pointer -> next;
         }
-    } else {
-        for (uint8_t i = uint128; i > 0; i--) {
-            word = 0;
-            for (uint8_t j = 0; j < 4; j++) {
-                word <<= 8;
-                word |= (uint32_t)(node_pointer -> value);
-                node_pointer = node_pointer -> next;
-            }
-            integer.array[i - 1] = word;
-        }
+        integer.array[i - 1] = word;
     }
     return integer;
 }
@@ -95,11 +96,63 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
     return (uint32_t)borrow;
 }
 
+uint32_t BigInt128_multiplication_by_base_2_pow_32(uint128_t* a, uint32_t N, uint128_t* b) {
+    uint64_t carry = 1;
+    uint64_t n = (uint64_t)N;
+    for (uint8_t i = 0; i < uint128; i++) {
+        carry = ((uint64_t)(a -> array[i]) * n) + carry;
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
 
+void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
+    
+    uint64_t carry = 0;
+    uint64_t carries[uint256] = {0};
+    uint64_t aa;
+    uint64_t bb;
 
-void print_bigint(uint128_t* a) {
-    for (uint8_t i = a -> type; i > 0; i--) {
-        printf("%08x", a -> array[i - 1]);
+    for (uint32_t i = 0; i < uint128; i++) {
+        for (uint32_t j = 0; j < uint128; j++) {
+            aa = (uint64_t)(a -> array[i]);
+            bb = (uint64_t)(b -> array[j]);
+            carry = carries[i + j];
+            carry = (aa * bb) + carry;
+            carries[i + j] = (carry & 0x00000000ffffffff);
+            carries[i + j + 1] += (carry >> 32);
+        }
+    }
+
+    for (uint8_t i = 0; i < uint256; i++) {
+        c -> array[i] = (uint32_t)carries[i];
+    }
+}
+
+void print_bigint(void* a, BigIntType type) {
+    
+    switch (type) {
+        case uint128:
+            for (uint8_t i = type; i > 0; i--) {
+                printf("%08x", ((uint128_t*)a) -> array[i - 1]);
+            }
+            break;
+        case uint256:
+            for (uint8_t i = type; i > 0; i--) {
+                printf("%08x", ((uint256_t*)a) -> array[i - 1]);
+            }
+            break;
+        default:
+            printf("none type received\n");
+            break;
     }
     printf("\n");
 }
+
+// void print_bigint(uint128_t* a) {
+//     for (uint8_t i = a -> type; i > 0; i--) {
+//         printf("%08x", a -> array[i - 1]);
+//     }
+//     printf("\n");
+// }

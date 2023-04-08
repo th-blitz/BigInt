@@ -1,5 +1,5 @@
 
-files := BigInt.o ByteStack.o DecimalArray.o main.o
+files := BigInt.o ByteStack.o ByteQueue.o DecimalArray.o unittest.o utils.o main.o
 
 all: a.out
 

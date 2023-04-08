@@ -4,7 +4,7 @@
 #include "ByteStack.h"
 #include "DecimalArray.h"
 #include "BigInt.h"
-
+#include "unittest.h"
 
 
 int main() {
@@ -55,6 +55,8 @@ int main() {
     c_stack.free(&c_stack);
 
     printf("%d\n", BigInt128_cmp(&aa, &bb));
+
+    run_tests();
 
     return 0;
 }

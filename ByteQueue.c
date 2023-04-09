@@ -15,6 +15,7 @@ uint8_t ByteQueue_peek_left(ByteQueue*);
 uint8_t ByteQueue_peek_right(ByteQueue*);
 void ByteQueue_free(ByteQueue*);
 void ByteQueue_print(ByteQueue*);
+void ByteQueue_print_hex(ByteQueue*);
 
 
 ByteQueue Byte_Queue() {
@@ -30,6 +31,7 @@ ByteQueue Byte_Queue() {
     queue.peek_right = ByteQueue_peek_right;
     queue.free = ByteQueue_free;
     queue.print = ByteQueue_print;
+    queue.print_hex = ByteQueue_print_hex;
     return queue;
 }
 
@@ -148,4 +150,15 @@ void ByteQueue_print(ByteQueue* queue) {
         node_ptr = node_ptr -> right;
     }
     printf("right\n");
+}
+
+void ByteQueue_print_hex(ByteQueue* queue) {
+    uint64_t size = queue -> size;
+    ByteQueue_node* node_ptr = queue -> left; 
+    printf("0x");
+    for (uint64_t i = 0; i < size; i++) {
+        printf("%02x", node_ptr -> value);
+        node_ptr = node_ptr -> right;
+    }
+    printf("\n");
 }

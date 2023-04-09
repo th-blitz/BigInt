@@ -26,7 +26,7 @@ ByteStack Byte_Stack();
 // void pop_ByteStack(ByteStack* self);
 // uint8_t peek_ByteStack(ByteStack* self);
 // void free_ByteStack(ByteStack* self);
-uint8_t update_byte(uint8_t byte, uint8_t bit, uint64_t index);
+// uint8_t update_byte(uint8_t byte, uint8_t bit, uint64_t index);
 
 
 #endif

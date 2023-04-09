@@ -15,6 +15,7 @@ typedef struct ByteQueue {
     uint8_t (*peek_left)(struct ByteQueue* self);
     void (*free)(struct ByteQueue* self);
     void (*print)(struct ByteQueue* self);
+    void (*print_hex)(struct ByteQueue* self);
 } ByteQueue;
 
 typedef struct ByteQueue_node {

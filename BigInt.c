@@ -436,7 +436,7 @@ void print_bigint(void* a, BigIntType type) {
                 if ((leading_zeros_flag == true) && ((((uint128_t*)a) -> array[i - 1]) != 0)) {
                     leading_zeros_flag = false;
                 } 
-                if (leading_zeros_flag == false) {
+                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
                     printf("%08x", ((uint128_t*)a) -> array[i - 1]);
                 }
             }
@@ -446,7 +446,7 @@ void print_bigint(void* a, BigIntType type) {
                 if ((leading_zeros_flag == true) && ((((uint256_t*)a) -> array[i - 1]) != 0)) {
                     leading_zeros_flag = false;
                 } 
-                if (leading_zeros_flag == false) {
+                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
                     printf("%08x", ((uint256_t*)a) -> array[i - 1]);
                 }
             }
@@ -456,7 +456,7 @@ void print_bigint(void* a, BigIntType type) {
                 if ((leading_zeros_flag == true) && ((((uint512_t*)a) -> array[i - 1]) != 0)) {
                     leading_zeros_flag = false;
                 } 
-                if (leading_zeros_flag == false) {
+                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
                     printf("%08x", ((uint512_t*)a) -> array[i - 1]);
                 }
             }
@@ -466,7 +466,7 @@ void print_bigint(void* a, BigIntType type) {
                 if ((leading_zeros_flag == true) && ((((uint1024_t*)a) -> array[i - 1]) != 0)) {
                     leading_zeros_flag = false;
                 } 
-                if (leading_zeros_flag == false) {
+                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
                     printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
                 }
             }
@@ -476,7 +476,7 @@ void print_bigint(void* a, BigIntType type) {
                 if ((leading_zeros_flag == true) && ((((uint2048_t*)a) -> array[i - 1]) != 0)) {
                     leading_zeros_flag = false;
                 } 
-                if (leading_zeros_flag == false) {
+                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
                     printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
                 }
             }

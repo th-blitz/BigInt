@@ -145,7 +145,7 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
     string_type[0] = string[0];
     string_type[1] = string[1];
 
-    ByteQueue queue;
+    ByteQueue queue = Byte_Queue();
     queue.size = 0;
     bool empty_queue_flag = true;
 
@@ -173,5 +173,15 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
             empty_queue_flag = false;
         }
     }
+
+    if (empty_queue_flag == true) {
+        print("- err: bad string error: ", red);
+        printlnc("at bigint_parser/one_time_string_to_bytequeue().", cyan);
+        printlnc("- A bad string has been passed that does not match any of the number formats like 0x00 (hex) or 0b00 (binary) or base10.", yellow);
+        println(string);
+        print("- Hence:", green);
+        printlnc(" the bigint initialized from the above string will be zero.", yellow);
+    }
+
     return queue;
 }

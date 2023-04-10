@@ -8,6 +8,7 @@
 #include "BigInt.h"
 #include "ByteQueue.h"
 #include "bigint_parser.h"
+#include "utils.h"
 
 
 #define MAX(a, b) (a > b ? a : b)
@@ -19,8 +20,8 @@ static int is_bigendian() {
     return *(char*)&i; // if returns 1 (big endian) else 0 (little endian).
 }
 
-static uint32_t word_mask[4] = {
-    0xff, 0xff00, 0xff0000, 0xff000000,
+static uint32_t word_mask[] = {
+    0xf, 0xf0, 0xf00, 0xf000, 0xf0000, 0xf00000, 0xf000000, 0xf0000000
 };
 
 BigInt BigIntModule();
@@ -486,6 +487,66 @@ void print_bigint(void* a, BigIntType type) {
             break;
     }
     printf("\n");
+}
+
+void BigInt_to_string(void* a, BigIntType type, char* string) {
+    
+    char* hex_to_char = "0123456789abcdef";
+
+    uint32_t i = 0;
+    uint8_t index = 0;
+    uint32_t idx;
+    
+    switch (type) {
+        case uint128:
+            idx = (uint32_t)(uint128 * 8);
+            string[idx] = '\0';
+            while (i < idx) {
+                index = ((((uint128_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
+                string[idx - i - 1] = hex_to_char[index]; 
+                i += 1;       
+            }
+            break;
+        case uint256:
+            idx = (uint32_t)(uint256 * 8);
+            string[idx] = '\0';
+            while (i < idx) {
+                index = ((((uint256_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
+                string[idx - i - 1] = hex_to_char[index]; 
+                i += 1;  
+            }
+            break;
+        case uint512:
+            idx = (uint32_t)(uint512 * 8);
+            string[idx] = '\0';
+            while (i < idx) {
+                index = ((((uint512_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
+                string[idx - i - 1] = hex_to_char[index];  
+                i += 1;      
+            }
+            break;
+        case uint1024:
+            string[idx] = '\0';
+            idx = (uint32_t)(uint1024 * 8);
+            while (i < idx) {
+                index = ((((uint1024_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
+                string[idx - i - 1] = hex_to_char[index]; 
+                i += 1;       
+            }
+            break;
+        case uint2048:
+            idx = (uint32_t)(uint2048 * 8);
+            string[idx] = '\0';
+            while (i < idx) {
+                index = ((((uint2048_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
+                string[idx - i - 1] = hex_to_char[index]; 
+                i += 1;       
+            }
+            break;
+        default:
+            printlnc("err: at BigInt.c/BigInt_to_string(): none type received", red);
+            break;
+    }
 }
 
 // void print_bigint(uint128_t* a) {

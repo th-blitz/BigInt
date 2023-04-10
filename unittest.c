@@ -95,6 +95,10 @@ void test_uint128() {
 
     bigint.print(&f, f.type);
 
+    char string[uint2048 * 8];
+    BigInt_to_string(&f, f.type, string);
+    println(string);
+
 }
 
 

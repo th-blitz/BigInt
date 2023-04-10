@@ -62,4 +62,6 @@ typedef struct BigInt {
 
 BigInt BigIntModule();
 
+void BigInt_to_string(void* a, BigIntType type, char* string);
+
 #endif

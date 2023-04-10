@@ -19,12 +19,64 @@ static int is_bigendian() {
     return *(char*)&i; // if returns 1 (big endian) else 0 (little endian).
 }
 
-
-
 static uint32_t word_mask[4] = {
     0xff, 0xff00, 0xff0000, 0xff000000,
 };
 
+BigInt BigIntModule();
+
+uint128_t BigInt128();
+uint256_t BigInt256();
+uint512_t BigInt512();
+uint1024_t BigInt1024();
+uint2048_t BigInt2048();
+
+uint128_t BigInt128_from_bytequeue(ByteQueue* queue);
+uint128_t BigInt128_from_string(char* string, uint64_t string_len);
+
+uint256_t BigInt256_from_bytequeue(ByteQueue* queue);
+uint256_t BigInt256_from_string(char* string, uint64_t string_len);
+
+uint512_t BigInt512_from_bytequeue(ByteQueue* queue);
+uint512_t BigInt512_from_string(char* string, uint64_t string_len);
+
+uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue);
+uint1024_t BigInt1024_from_string(char* string, uint64_t string_len);
+
+uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue);
+uint2048_t BigInt2048_from_string(char* string, uint64_t string_len);
+
+uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c);
+uint32_t BigInt256_add(uint256_t* a, uint256_t* b, uint256_t* c);
+uint32_t BigInt512_add(uint512_t* a, uint512_t* b, uint512_t* c);
+uint32_t BigInt1024_add(uint1024_t* a, uint1024_t* b, uint1024_t* c);
+uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c);
+uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type);
+
+void print_bigint(void* a, BigIntType type);
+
+
+BigInt BigIntModule() {
+    
+    BigInt opp;
+    
+    opp.u128 = BigInt128;
+    opp.u256 = BigInt256;
+    opp.u512 = BigInt512;
+    opp.u1024 = BigInt1024;
+    opp.u2048 = BigInt2048;
+
+    opp.u128_from_string = BigInt128_from_string;
+    opp.u256_from_string = BigInt256_from_string;
+    opp.u512_from_string = BigInt512_from_string;
+    opp.u1024_from_string = BigInt1024_from_string;
+    opp.u2048_from_string = BigInt2048_from_string;
+    
+    opp.add = BigInt_Addition;
+
+    opp.print = print_bigint;
+    return opp;
+}
 
 
 
@@ -85,8 +137,131 @@ uint128_t BigInt128_from_string(char* string, uint64_t string_len) {
     return integer;
 }
 
+uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
+    uint256_t integer = BigInt256();
+    ByteQueue_node* node_pointer = queue -> right;
+    uint32_t word;
+
+    uint8_t iters = MIN(uint256 * 4, queue -> size);
+    uint8_t j = 0;
+    uint8_t k = 0;
+    uint8_t i = 0;
+    while (k < iters) {
+        word = 0;
+        j = 0;
+        while ((k < iters) && (j < 4)) {
+            word |= (uint32_t)(node_pointer -> value) << (j * 8);
+            node_pointer = node_pointer -> left;
+            j += 1;
+            k += 1;
+        }
+        integer.array[i] = word;
+        i += 1;
+    }
+    return integer;
+}
+
+uint256_t BigInt256_from_string(char* string, uint64_t string_len) {
+    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    uint256_t integer = BigInt256_from_bytequeue(&queue);
+    queue.free(&queue);
+    return integer;
+}
+
+uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
+    uint512_t integer = BigInt512();
+    ByteQueue_node* node_pointer = queue -> right;
+    uint32_t word;
+
+    uint8_t iters = MIN(uint512 * 4, queue -> size);
+    uint8_t j = 0;
+    uint8_t k = 0;
+    uint8_t i = 0;
+    while (k < iters) {
+        word = 0;
+        j = 0;
+        while ((k < iters) && (j < 4)) {
+            word |= (uint32_t)(node_pointer -> value) << (j * 8);
+            node_pointer = node_pointer -> left;
+            j += 1;
+            k += 1;
+        }
+        integer.array[i] = word;
+        i += 1;
+    }
+    return integer;
+}
+
+uint512_t BigInt512_from_string(char* string, uint64_t string_len) {
+    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    uint512_t integer = BigInt512_from_bytequeue(&queue);
+    queue.free(&queue);
+    return integer;
+}
 
 
+uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
+    uint1024_t integer = BigInt1024();
+    ByteQueue_node* node_pointer = queue -> right;
+    uint32_t word;
+
+    uint32_t iters = MIN(uint1024 * 4, queue -> size);
+    uint32_t j = 0;
+    uint32_t k = 0;
+    uint32_t i = 0;
+    while (k < iters) {
+        word = 0;
+        j = 0;
+        while ((k < iters) && (j < 4)) {
+            word |= (uint32_t)(node_pointer -> value) << (j * 8);
+            node_pointer = node_pointer -> left;
+            j += 1;
+            k += 1;
+        }
+        integer.array[i] = word;
+        i += 1;
+    }
+    return integer;
+}
+
+uint1024_t BigInt1024_from_string(char* string, uint64_t string_len) {
+    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    uint1024_t integer = BigInt1024_from_bytequeue(&queue);
+    queue.free(&queue);
+    return integer;
+}
+
+
+uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
+    uint2048_t integer = BigInt2048();
+    ByteQueue_node* node_pointer = queue -> right;
+    uint32_t word;
+
+    uint32_t iters = MIN(uint2048 * 4, queue -> size);
+    uint32_t j = 0;
+    uint32_t k = 0;
+    uint32_t i = 0;
+    while (k < iters) {
+        word = 0;
+        j = 0;
+        while ((k < iters) && (j < 4)) {
+            word |= (uint32_t)(node_pointer -> value) << (j * 8);
+            node_pointer = node_pointer -> left;
+            j += 1;
+            k += 1;
+        }
+        integer.array[i] = word;
+        i += 1;
+    }
+    return integer;
+}
+
+uint2048_t BigInt2048_from_string(char* string, uint64_t string_len) {
+    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    uint2048_t integer = BigInt2048_from_bytequeue(&queue);
+    queue.free(&queue);
+    return integer;
+}
 
 // uint128_t BigInt128_from_bytes(ByteStack* bytes) {
 //     uint128_t integer = {.array = {0}, .type = uint128};
@@ -155,7 +330,7 @@ uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
 }
 
 
-uint32_t BigInt128_Addition(void* a, void* b, void* c, BigIntType type) {
+uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type) {
     uint32_t carry = 0;
     switch (type) {
         case uint128:
@@ -176,6 +351,7 @@ uint32_t BigInt128_Addition(void* a, void* b, void* c, BigIntType type) {
         default:
             break;
     }
+    
     return carry;
 }
 
@@ -253,20 +429,60 @@ void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
 }
 
 void print_bigint(void* a, BigIntType type) {
-    
+    bool leading_zeros_flag = true;
     switch (type) {
         case uint128:
             for (uint8_t i = type; i > 0; i--) {
-                printf("%08x", ((uint128_t*)a) -> array[i - 1]);
+                if ((leading_zeros_flag == true) && ((((uint128_t*)a) -> array[i - 1]) != 0)) {
+                    leading_zeros_flag = false;
+                } 
+                if (leading_zeros_flag == false) {
+                    printf("%08x", ((uint128_t*)a) -> array[i - 1]);
+                }
             }
             break;
         case uint256:
             for (uint8_t i = type; i > 0; i--) {
-                printf("%08x", ((uint256_t*)a) -> array[i - 1]);
+                if ((leading_zeros_flag == true) && ((((uint256_t*)a) -> array[i - 1]) != 0)) {
+                    leading_zeros_flag = false;
+                } 
+                if (leading_zeros_flag == false) {
+                    printf("%08x", ((uint256_t*)a) -> array[i - 1]);
+                }
+            }
+            break;
+        case uint512:
+            for (uint8_t i = type; i > 0; i--) {
+                if ((leading_zeros_flag == true) && ((((uint512_t*)a) -> array[i - 1]) != 0)) {
+                    leading_zeros_flag = false;
+                } 
+                if (leading_zeros_flag == false) {
+                    printf("%08x", ((uint512_t*)a) -> array[i - 1]);
+                }
+            }
+            break;
+        case uint1024:
+            for (uint8_t i = type; i > 0; i--) {
+                if ((leading_zeros_flag == true) && ((((uint1024_t*)a) -> array[i - 1]) != 0)) {
+                    leading_zeros_flag = false;
+                } 
+                if (leading_zeros_flag == false) {
+                    printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
+                }
+            }
+            break;
+        case uint2048:
+            for (uint8_t i = type; i > 0; i--) {
+                if ((leading_zeros_flag == true) && ((((uint2048_t*)a) -> array[i - 1]) != 0)) {
+                    leading_zeros_flag = false;
+                } 
+                if (leading_zeros_flag == false) {
+                    printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
+                }
             }
             break;
         default:
-            printf("none type received\n");
+            printf("err: at BigInt.c/print_bigint(): none type received\n");
             break;
     }
     printf("\n");

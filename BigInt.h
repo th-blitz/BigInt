@@ -39,16 +39,27 @@ typedef struct uint2048_tt {
     BigIntType type;
 } uint2048_t;
 
-uint128_t BigInt128();
-uint256_t BigInt256();
 
-uint128_t BigInt128_from_string(char* string, uint64_t string_len);
-uint32_t BigInt128_Addition(void* a, void* b, void* c, BigIntType type);
-uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c);
-void print_bigint(void* a, BigIntType type);
-uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c);
-int BigInt128_cmp(uint128_t* a, uint128_t* b);
-uint32_t BigInt128_multiplication_by_base_2_pow_32(uint128_t* a, uint32_t N, uint128_t* b);
-void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c);
+typedef struct BigInt {
+    uint128_t (*u128)();
+    uint256_t (*u256)();
+    uint512_t (*u512)();
+    uint1024_t (*u1024)();
+    uint2048_t (*u2048)();
+
+    uint128_t (*u128_from_string)(char* string, uint64_t string_len);
+    uint256_t (*u256_from_string)(char* string, uint64_t string_len);
+    uint512_t (*u512_from_string)(char* string, uint64_t string_len);
+    uint1024_t (*u1024_from_string)(char* string, uint64_t string_len);
+    uint2048_t (*u2048_from_string)(char* string, uint64_t string_len);
+
+    uint32_t (*add)(void* a, void* b, void* c, BigIntType type);
+
+    void (*print)(void* a, BigIntType type);
+
+} BigInt;
+
+
+BigInt BigIntModule();
 
 #endif

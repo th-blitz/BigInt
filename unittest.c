@@ -70,39 +70,17 @@ void test_parser() {
 
 void test_uint128() {
 
+    BigInt bigint = BigIntModule();
 
-    println("- test uint128_t from string");
-    char* num_string = "003232";
-    println("check: 003232");
-    uint128_t num = BigInt128_from_string(num_string, strlen(num_string));
-    print_bigint(&num, num.type);
+    uint256_t a = bigint.u256_from_string("7832957389", 10);
+    bigint.print(&a, a.type);
 
 
-    num_string = "000000";
-    printf("check: ");
-    println(num_string);
-    num = BigInt128_from_string(num_string, strlen(num_string));
-    print_bigint(&num, num.type);
 
+    char* a_large_num = "927045907394857023748052874594375902785497209845702835472309845794375924350293745094387574908759794027389503845902837450284957029387502734598437520048398549843775342705479052089452040829258472037589207509237950789437509283470527504970278452750942375894337485";
+    uint1024_t b = bigint.u1024_from_string(a_large_num, strlen(a_large_num));
+    bigint.print(&b, b.type);
 
-    num_string = "340282366920938463463374607431768211455";
-    printf("check: ");
-    println(num_string);
-    num = BigInt128_from_string(num_string, strlen(num_string));
-    print_bigint(&num, num.type);
-
-    num_string = "340282366920938463463374607431768211456";
-    printf("check: ");
-    println(num_string);
-    num = BigInt128_from_string(num_string, strlen(num_string));
-    print_bigint(&num, num.type);
-
-    num_string = "3402823669209384634633746074";
-    printf("check: ");
-    println(num_string);
-    num = BigInt128_from_string(num_string, strlen(num_string));
-    print_bigint(&num, num.type);
-    println("AFEBFF0BCB24AAFEF78F69A");
 
 }
 

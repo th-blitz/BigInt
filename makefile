@@ -1,5 +1,5 @@
 
-files := BigInt.o ByteStack.o ByteQueue.o unittest.o utils.o bigint_parser.o main.o
+files := BigInt.o ByteQueue.o unittest.o utils.o bigint_parser.o main.o
 
 all: a.out
 

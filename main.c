@@ -1,8 +1,6 @@
 #include <stdio.h>
 
 
-#include "ByteStack.h"
-#include "DecimalArray.h"
 #include "BigInt.h"
 #include "unittest.h"
 

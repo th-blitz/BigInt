@@ -4,8 +4,15 @@
 #include <stdlib.h>
 
 
-#include "ByteStack.h"
+// #include "ByteStack.h"
 #include "BigInt.h"
+#include "ByteQueue.h"
+#include "bigint_parser.h"
+
+
+#define MAX(a, b) (a > b ? a : b)
+#define MIN(a, b) (a < b ? a : b)
+
 
 static int is_bigendian() {
     int i = 1;
@@ -15,7 +22,7 @@ static int is_bigendian() {
 
 
 static uint32_t word_mask[4] = {
-    0x80000000, 0x800000, 0x8000, 0x80,
+    0xff, 0xff00, 0xff0000, 0xff000000,
 };
 
 
@@ -31,22 +38,71 @@ uint256_t BigInt256() {
     return type;
 }
 
+uint512_t BigInt512() {
+    uint512_t type = {.array = {0}, .type = uint512};
+    return type;
+}
 
-uint128_t BigInt128_from_bytes(ByteStack* bytes) {
-    uint128_t integer = {.array = {0}, .type = uint128};
-    ByteStack_node* node_pointer = bytes -> head;
+uint1024_t BigInt1024() {
+    uint1024_t type = {.array = {0}, .type = uint1024};
+    return type;
+}
+
+uint2048_t BigInt2048() {
+    uint2048_t type = {.array = {0}, .type = uint2048};
+    return type;
+}
+
+
+uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
+    uint128_t integer = BigInt128();
+    ByteQueue_node* node_pointer = queue -> right;
     uint32_t word;
-    for (uint8_t i = uint128; i > 0; i--) {
+
+    uint8_t iters = MIN(uint128 * 4, queue -> size);
+    uint8_t j = 0;
+    uint8_t k = 0;
+    uint8_t i = 0;
+    while (k < iters) {
         word = 0;
-        for (uint8_t j = 0; j < 4; j++) {
-            word <<= 8;
-            word |= (uint32_t)(node_pointer -> value);
-            node_pointer = node_pointer -> next;
+        j = 0;
+        while ((k < iters) && (j < 4)) {
+            word |= (uint32_t)(node_pointer -> value) << (j * 8);
+            node_pointer = node_pointer -> left;
+            j += 1;
+            k += 1;
         }
-        integer.array[i - 1] = word;
+        integer.array[i] = word;
+        i += 1;
     }
     return integer;
 }
+
+uint128_t BigInt128_from_string(char* string, uint64_t string_len) {
+    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    uint128_t integer = BigInt128_from_bytequeue(&queue);
+    queue.free(&queue);
+    return integer;
+}
+
+
+
+
+// uint128_t BigInt128_from_bytes(ByteStack* bytes) {
+//     uint128_t integer = {.array = {0}, .type = uint128};
+//     ByteStack_node* node_pointer = bytes -> head;
+//     uint32_t word;
+//     for (uint8_t i = uint128; i > 0; i--) {
+//         word = 0;
+//         for (uint8_t j = 0; j < 4; j++) {
+//             word <<= 8;
+//             word |= (uint32_t)(node_pointer -> value);
+//             node_pointer = node_pointer -> next;
+//         }
+//         integer.array[i - 1] = word;
+//     }
+//     return integer;
+// }
 
 uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t carry = 0;
@@ -57,6 +113,72 @@ uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c) {
     }
     return (uint32_t)carry;
 }
+
+uint32_t BigInt256_add(uint256_t* a, uint256_t* b, uint256_t* c) {
+    uint64_t carry = 0;
+    for (uint8_t i = 0; i < uint256; i++) {
+        carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
+        c -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt512_add(uint512_t* a, uint512_t* b, uint512_t* c) {
+    uint64_t carry = 0;
+    for (uint8_t i = 0; i < uint512; i++) {
+        carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
+        c -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt1024_add(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
+    uint64_t carry = 0;
+    for (uint8_t i = 0; i < uint1024; i++) {
+        carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
+        c -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
+    uint64_t carry = 0;
+    for (uint8_t i = 0; i < uint2048; i++) {
+        carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
+        c -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+
+uint32_t BigInt128_Addition(void* a, void* b, void* c, BigIntType type) {
+    uint32_t carry = 0;
+    switch (type) {
+        case uint128:
+            carry = BigInt128_add(a, b, c);
+            break;
+        case uint256:
+            carry = BigInt256_add(a, b, c);
+            break;
+        case uint512:
+            carry = BigInt512_add(a, b, c);
+            break;
+        case uint1024:
+            carry = BigInt1024_add(a, b, c);
+            break;
+        case uint2048:
+            carry = BigInt2048_add(a, b, c);
+            break;
+        default:
+            break;
+    }
+    return carry;
+}
+
 
 int BigInt128_cmp(uint128_t* a, uint128_t* b) {
     for (uint32_t i = uint128; i > 0; i--) {

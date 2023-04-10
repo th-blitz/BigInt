@@ -7,6 +7,7 @@
 #include "ByteQueue.h"
 #include "utils.h"
 #include "bigint_parser.h"
+#include "BigInt.h"
 
 
 void test_ByteQueue() {
@@ -67,6 +68,44 @@ void test_parser() {
     queue.free(&queue);
 }
 
+void test_uint128() {
+
+
+    println("- test uint128_t from string");
+    char* num_string = "003232";
+    println("check: 003232");
+    uint128_t num = BigInt128_from_string(num_string, strlen(num_string));
+    print_bigint(&num, num.type);
+
+
+    num_string = "000000";
+    printf("check: ");
+    println(num_string);
+    num = BigInt128_from_string(num_string, strlen(num_string));
+    print_bigint(&num, num.type);
+
+
+    num_string = "340282366920938463463374607431768211455";
+    printf("check: ");
+    println(num_string);
+    num = BigInt128_from_string(num_string, strlen(num_string));
+    print_bigint(&num, num.type);
+
+    num_string = "340282366920938463463374607431768211456";
+    printf("check: ");
+    println(num_string);
+    num = BigInt128_from_string(num_string, strlen(num_string));
+    print_bigint(&num, num.type);
+
+    num_string = "3402823669209384634633746074";
+    printf("check: ");
+    println(num_string);
+    num = BigInt128_from_string(num_string, strlen(num_string));
+    print_bigint(&num, num.type);
+    println("AFEBFF0BCB24AAFEF78F69A");
+
+}
+
 
 void run_tests() {
     
@@ -80,6 +119,11 @@ void run_tests() {
 
     println("test 2. parser");
     test_parser();
+    i += 1;
+    println("");
+
+    println("test 3. bigint uint128_t");
+    test_uint128();
     i += 1;
     println("");
 }

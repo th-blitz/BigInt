@@ -10,6 +10,9 @@
 #include "BigInt.h"
 
 
+#define is_passing(a) (a == true ? printlnc("- passed.", green) : printlnc("- failed.", red));
+
+
 void test_ByteQueue() {
 
     println("- create queue.");    
@@ -68,37 +71,41 @@ void test_parser() {
     queue.free(&queue);
 }
 
-void test_uint128() {
+bool test_uint128() {
 
     BigInt bigint = BigIntModule();
+    char check_string[uint2048 * 8];
+    bool passing = false;
 
-    uint256_t a = bigint.u256_from_string("7832957389", 10);
-    bigint.print(&a, a.type);
+    uint128_t a = bigint.u128_from_string("8019837018392", strlen("8019837018392"));
+    bigint.to_string(&a, a.type, check_string);
+    passing = hex_string_compare("74b43896118", check_string);
+    (passing == true) ? printlnc("- passed.", green) : printlnc("- failed.", red);
+    
+    uint128_t b = bigint.u128_from_string("000000", strlen("000000"));
+    bigint.to_string(&b, b.type, check_string);
+    passing = hex_string_compare("0", check_string);
+    (passing == true) ? printlnc("- passed.", green) : printlnc("- failed.", red);
 
+    char* c_string = "340282366920938463463374607431768211455";
+    uint128_t c = bigint.u128_from_string(c_string, strlen(c_string));
+    bigint.to_string(&c, c.type, check_string);
+    passing = hex_string_compare("00ffffffffffffffffffffffffffffffff", check_string);
+    (passing == true) ? printlnc("- passed.", green) : printlnc("- failed.", red);
+    
+    char* d_string = "340282366920938463463374607431768211456";
+    uint128_t d = bigint.u128_from_string(d_string, strlen(d_string));
+    bigint.to_string(&d, d.type, check_string);
+    passing = hex_string_compare("000", check_string);
+    (passing == true) ? printlnc("- passed.", green) : printlnc("- failed.", red);
+    
+    char* e_string = "340282366920938463463374607431768211457";
+    uint128_t e = bigint.u128_from_string(e_string, strlen(e_string));
+    bigint.to_string(&e, e.type, check_string);
+    passing = hex_string_compare("001", check_string);
+    is_passing(passing);
 
-
-    char* a_large_num = "927045907394857023748052874594375902785497209845702835472309845794375924350293745094387574908759794027389503845902837450284957029387502734598437520048398549843775342705479052089452040829258472037589207509237950789437509283470527504970278452750942375894337485";
-    uint1024_t b = bigint.u1024_from_string(a_large_num, strlen(a_large_num));
-    bigint.print(&b, b.type);
-
-    uint1024_t c = bigint.u1024_from_string("00", 2);
-    bigint.print(&c, c.type);
-
-    char* a_large_num2 = "32317006071311007300714876688669951960444102669715484032130345430000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-    uint2048_t d = bigint.u2048_from_string(a_large_num2, strlen(a_large_num2));
-    bigint.print(&d, d.type);
-
-    uint2048_t e = bigint.u2048_from_string("001", 3);
-    uint2048_t f = bigint.u2048();
-
-    bigint.add(&d, &e, &f, f.type);
-
-    bigint.print(&f, f.type);
-
-    char string[uint2048 * 8];
-    BigInt_to_string(&f, f.type, string);
-    println(string);
-
+    return passing;   
 }
 
 
@@ -106,6 +113,7 @@ void run_tests() {
     
     int total_tests = 1;    
     int i = 0;
+    bool passing = false;
 
     println("test 1. bytequeue");
     test_ByteQueue();
@@ -118,7 +126,8 @@ void run_tests() {
     println("");
 
     println("test 3. bigint uint128_t");
-    test_uint128();
+    passing = test_uint128();
+    print("test 3: ", cyan);
+    is_passing(passing);
     i += 1;
-    println("");
 }

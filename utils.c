@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 
 #include "utils.h"
+
+#define MAX(a, b) (a >= b ? a : b)
+#define MIN(a, b) (a <= b ? a : b)
 
 
 #define ANSI_COLOR_RED     "\x1b[31m"
@@ -27,6 +31,20 @@ void printlnc(char* string, enum PrintColors color) {
     println("");
 }
 
+bool hex_string_compare(char* s1, char* s2) {
+
+    uint64_t s1_len = strlen(s1);
+    uint64_t s2_len = strlen(s2);
+
+    uint64_t i = 0;
+    while (i < MAX(s1_len, s2_len)) {
+        if (((i < s1_len) ? s1[s1_len - i - 1] : '0') != ((i < s2_len) ? s2[s2_len - i - 1] : '0')) {
+            return false;
+        }
+        i += 1;
+    }
+    return true;
+}
 
 void print(char* string, enum PrintColors colors) {
     

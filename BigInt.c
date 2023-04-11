@@ -55,6 +55,7 @@ uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c);
 uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type);
 
 void print_bigint(void* a, BigIntType type);
+void BigInt_to_string(void* a, BigIntType type, char* string);
 
 
 BigInt BigIntModule() {
@@ -76,6 +77,7 @@ BigInt BigIntModule() {
     opp.add = BigInt_Addition;
 
     opp.print = print_bigint;
+    opp.to_string = BigInt_to_string;
     return opp;
 }
 

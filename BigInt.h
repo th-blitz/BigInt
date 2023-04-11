@@ -56,6 +56,7 @@ typedef struct BigInt {
     uint32_t (*add)(void* a, void* b, void* c, BigIntType type);
 
     void (*print)(void* a, BigIntType type);
+    void (*to_string)(void* a, BigIntType type, char* string);
 
 } BigInt;
 

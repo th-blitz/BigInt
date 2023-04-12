@@ -77,9 +77,9 @@ bool test_uint128() {
     char check_string[uint2048 * 8];
     bool passing = false;
 
-    uint128_t a = bigint.u128_from_string("8019837018392", strlen("8019837018392"));
+    uint128_t a = bigint.u128_from_string("0b1101", strlen("0b1101"));
     bigint.to_string(&a, a.type, check_string);
-    passing = hex_string_compare("74b43896118", check_string);
+    passing = hex_string_compare("d", check_string);
     (passing == true) ? printlnc("- passed.", green) : printlnc("- failed.", red);
     
     uint128_t b = bigint.u128_from_string("000000", strlen("000000"));

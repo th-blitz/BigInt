@@ -13,6 +13,10 @@ static uint8_t byte_mask[8] = {
     0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 
 };
 
+static uint8_t byte_hex_mask[] = {
+    0xa, 0xb, 0xc, 0xd, 0xe, 0xf
+};
+
 static uint8_t update_byte(uint8_t byte, uint8_t bit, uint64_t index) {
     switch (bit) {
         case 0:
@@ -85,12 +89,49 @@ ByteQueue bytequeue_from_base10_string(uint8_t* array, uint64_t array_len) {
 }
 
 ByteQueue bytequeue_from_hex_string(char* string, uint64_t string_len) {
-    ByteQueue queue;
+    
+    ByteQueue queue = Byte_Queue();
+    uint8_t byte = 0x0;
+    uint64_t i = string_len;
+    uint64_t even_flag = (string_len % 2 == 0) ? 1 : 0;
+
+    while (i > 0) {
+        byte <<= 4;
+        if ((string[i - 1] >= 'A') && (string[i - 1] <= 'F')) {
+            byte |= byte_hex_mask[string[i - 1] - 'A'];
+        } else if ((string[i - 1] >= 'a') && (string[i - 1] <= 'f')) {
+            byte |= byte_hex_mask[string[i - 1] - 'a'];
+        } else if ((string[i - 1] >= '0') && (string[i - 1] <= '9')) {
+            byte |= string[i - 1] - '0';
+        }
+        if (i % 2 == even_flag) {
+            queue.append_left(&queue, byte << 4 | byte >> 4);
+            byte = 0x0;
+        }
+        i -= 1;
+    }
+    if (byte != 0) { queue.append_left(&queue, byte); }
     return queue;
 }
 
 ByteQueue bytequeue_from_binary_string(char* string, uint64_t string_len) {
-    ByteQueue queue;
+    
+    ByteQueue queue = Byte_Queue();
+    uint8_t byte = 0x0;
+    uint64_t i = 0;
+    uint64_t even_flag = (string_len % 2 == 0) ? 1 : 0;
+
+    while (i < string_len) {
+        if ((string[string_len - i - 1] == '0') || (string[string_len - i - 1] == '1')) {
+            byte |= (string[string_len - i - 1] - '0') << (i % 8);
+        }
+        if (i % 8 == 7) {
+            queue.append_left(&queue, byte);
+            byte = 0x0;
+        }
+        i += 1;
+    }
+    if (byte != 0) {queue.append_left(&queue, byte);}
     return queue;
 }
 
@@ -118,7 +159,7 @@ bool hex_string_check(char* string, uint64_t string_len) {
 
 bool binary_string_check(char* string, uint64_t string_len) {
     for (uint64_t i = 2; i < string_len; i++) {
-        if ((string[i] == '1') && (string[i] == '0')) {
+        if ((string[i] == '1') || (string[i] == '0')) {
             continue;
         } else {
             return false;
@@ -150,7 +191,6 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
     bool empty_queue_flag = true;
 
     if (string_type[0] == '0' && string_type[1] == 'x') {
-        println("hex");
         if(hex_string_check(string, string_len) == true) {
             queue = bytequeue_from_hex_string(string, string_len);
             empty_queue_flag = false;

@@ -103,6 +103,9 @@ ByteQueue bytequeue_from_hex_string(char* string, uint64_t string_len) {
             byte |= byte_hex_mask[string[i - 1] - 'a'];
         } else if ((string[i - 1] >= '0') && (string[i - 1] <= '9')) {
             byte |= string[i - 1] - '0';
+        } else {
+            printlnc("err: at bigintparser.c/bytequeue_from_hex_string():", red);
+            printf("%c\n", string[i - 1]);
         }
         if (i % 2 == even_flag) {
             queue.append_left(&queue, byte << 4 | byte >> 4);
@@ -124,6 +127,9 @@ ByteQueue bytequeue_from_binary_string(char* string, uint64_t string_len) {
     while (i < string_len) {
         if ((string[string_len - i - 1] == '0') || (string[string_len - i - 1] == '1')) {
             byte |= (string[string_len - i - 1] - '0') << (i % 8);
+        } else {
+            printlnc("err: at bigintparser.c/bytequeue_from_binary_string():", red);
+            printf("%c\n", string[string_len - i - 1]);
         }
         if (i % 8 == 7) {
             queue.append_left(&queue, byte);
@@ -189,21 +195,28 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
     ByteQueue queue = Byte_Queue();
     queue.size = 0;
     bool empty_queue_flag = true;
+    uint64_t i = 0;
 
     if (string_type[0] == '0' && string_type[1] == 'x') {
         if(hex_string_check(string, string_len) == true) {
-            queue = bytequeue_from_hex_string(string, string_len);
+            i = 2;
+            while ((string[i] == '0') && (i < string_len)) {
+                i += 1;
+            }
+            queue = bytequeue_from_hex_string(string + i, string_len - i);
             empty_queue_flag = false;
         }
     } else if (string_type[0] == '0' && string_type[1] == 'b') {
-        println("binary");
         if (binary_string_check(string, string_len) == true) {
-            queue = bytequeue_from_binary_string(string, string_len);
+            i = 2;
+            while ((string[i] == '0') && (i < string_len)) {
+                i += 1;
+            }
+            queue = bytequeue_from_binary_string(string + i, string_len - i);
             empty_queue_flag = false;
         }
     } else {
         if (base10_string_check(string, string_len) == true) {
-            uint64_t i = 0;
             while ((string[i] == '0') && (i < string_len) ) {
                 i += 1;
             }

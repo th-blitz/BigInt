@@ -18,6 +18,9 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
+void printint(uint64_t i) {
+    printf("%ld", i);
+}
 
 void println(char* string) {
     for (uint64_t i = 0; i < strlen(string); i++) {
@@ -79,4 +82,9 @@ void print(char* string, enum PrintColors colors) {
         printf("%c", string[i]);
     }
     printf(ANSI_COLOR_RESET);
+}
+
+void printlnint(uint64_t i) {
+    printint(i);
+    println("");
 }

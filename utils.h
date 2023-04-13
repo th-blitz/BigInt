@@ -24,5 +24,7 @@ bool hex_string_compare(char* s1, char* s2);
 void printint(uint64_t i);
 void printlnint(uint64_t i);
 void printchar(char a, enum PrintColors color);
+void printc(enum PrintColors colors);
+void printintc(uint64_t i, enum PrintColors color); 
 
 #endif

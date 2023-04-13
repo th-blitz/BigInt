@@ -9,6 +9,7 @@
 #include "bigint_parser.h"
 #include "BigInt.h"
 
+#include "unittest.h"
 
 void is_passing(bool pass, uint32_t i, uint32_t n) {
     print("|", white);
@@ -22,6 +23,81 @@ void is_passing(bool pass, uint32_t i, uint32_t n) {
         printlnc(" fail", red);
     }
 }
+
+void unittest_finalize(unittest* module) {
+    print("- tests (", white);
+    if (module -> fails == 0) {
+        printintc(module -> passes, green);
+        print("/", white);
+        printintc(module -> total_tests, green);
+        print(") ", white);
+        printlnc("all passed", green);
+    } else if ((module -> fails != 0) && (module -> passes != 0)) {
+        printintc(module -> passes, yellow);
+        print("/", white);
+        printintc(module -> total_tests, yellow);
+        print(") ", white);
+        print("passed", yellow);
+        print(" and ", white);
+        print("(", white);
+        printintc(module -> fails, red);
+        print("/", white);
+        printintc(module -> total_tests, red);
+        print(") ", white);
+        printlnc("failed", red);
+        print("  | fails: ", white);
+        for (uint64_t i = 0; i < module -> count; i++) {
+            if (module -> tests[i] == 1) {
+                printintc(i + 1, yellow);
+                print(" ", white);
+            }
+        }
+        println("");
+    } else if (module -> passes == 0) {
+        printintc(module -> passes, red);
+        print("/", white);
+        printintc(module -> total_tests, red);
+        print(") ", white);
+        printlnc("passes (all failed)", red);
+    }
+}
+
+void unittest_reset(unittest* module) {
+    module -> count = 0;
+    module -> passes = 0;
+    module -> fails = 0;
+    for (uint64_t i = 0; i < module -> total_tests; i++) {
+        module -> tests[i] = 0;
+    }
+}
+
+void unittest_update(unittest* module, bool pass_or_fail) {
+    module -> passes += (pass_or_fail == true) ? 1 : 0;
+    module -> fails += (pass_or_fail == false) ? 1 : 0;
+    module -> tests[module -> count] = (pass_or_fail == false) ? 1: 0;
+    module -> count += 1;
+}
+
+void unittest_free(unittest* module) {
+    free(module -> tests);
+}
+
+unittest malloc_UnitTest_Module(uint64_t total_tests) {
+    unittest module = {
+        .count = 0,
+        .total_tests = total_tests,
+        .passes = 0,
+        .fails = 0,
+    };
+    module.tests = (uint8_t*)malloc(total_tests * sizeof(uint8_t));
+    module.reset = unittest_reset;
+    module.update = unittest_update;
+    module.finalize = unittest_finalize;
+    module.free = unittest_free;
+    return module;
+}
+
+
 
 bool unittest_uint128_init(char* input_string, char* output_string) {
     BigInt bigint = BigIntModule();
@@ -52,11 +128,14 @@ void test_uint128_init() {
     uint32_t number_of_tests = 16;
     uint32_t i = 0;
     bool pass = false;
+    unittest testing = malloc_UnitTest_Module(16);
     while (i < number_of_tests) {
         pass = unittest_uint128_init(inputs[i], outputs[i]);
-        is_passing(pass, i + 1, number_of_tests);
+        testing.update(&testing, pass);
         i += 1;
     }
+    testing.finalize(&testing);
+    testing.free(&testing);
 }
 
 bool unittest_uint128_addition(char* input_string_a, char* input_string_b, char* output_string_a, uint32_t output_carry) {
@@ -101,14 +180,15 @@ void test_uint128_addition() {
     uint32_t number_of_tests = 16;
     uint32_t i = 0;
     bool pass = false;
+    unittest testing = malloc_UnitTest_Module(8);
     while (i < number_of_tests) {
         pass = unittest_uint128_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
-        is_passing(pass, i + 2, number_of_tests);
+        testing.update(&testing, pass);
         i += 2;
     }
-
+    testing.finalize(&testing);
+    testing.free(&testing);
 }
-
 
 void run_tests() {
     

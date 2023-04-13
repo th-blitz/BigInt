@@ -370,6 +370,74 @@ int BigInt128_cmp(uint128_t* a, uint128_t* b) {
     return 0;
 }
 
+int BigInt256_cmp(uint256_t* a, uint256_t* b) {
+    for (uint32_t i = uint256; i > 0; i--) {
+        if ((a -> array[i - 1]) > (b -> array[i - 1])) {
+            return 1;
+        } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int BigInt512_cmp(uint256_t* a, uint256_t* b) {
+    for (uint32_t i = uint512; i > 0; i--) {
+        if ((a -> array[i - 1]) > (b -> array[i - 1])) {
+            return 1;
+        } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int BigInt1024_cmp(uint1024_t* a, uint1024_t* b) {
+    for (uint32_t i = uint1024; i > 0; i--) {
+        if ((a -> array[i - 1]) > (b -> array[i - 1])) {
+            return 1;
+        } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int BigInt2048_cmp(uint2048_t* a, uint2048_t* b) {
+    for (uint32_t i = uint2048; i > 0; i--) {
+        if ((a -> array[i - 1]) > (b -> array[i - 1])) {
+            return 1;
+        } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int BigInt_Compare(void* a, void* b, BigIntType type) {
+    int cmp = 9;
+    switch (type) {
+        case uint128:
+            cmp = BigInt128_cmp(a, b);
+            break;
+        case uint256:
+            cmp = BigInt256_cmp(a, b);
+            break;
+        case uint512:
+            cmp = BigInt512_cmp(a, b);
+            break;
+        case uint1024:
+            cmp = BigInt1024_cmp(a, b);
+            break;
+        case uint2048:
+            cmp = BigInt2048_cmp(a, b);
+            break;
+        default:
+            break;
+    }
+    return cmp;
+}
+
 uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t borrow = 0;
     uint64_t borrow_mask = 1;

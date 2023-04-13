@@ -9,13 +9,22 @@
 #define MAX(a, b) (a >= b ? a : b)
 #define MIN(a, b) (a <= b ? a : b)
 
-
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
+// https://chrisyeh96.github.io/2020/03/28/terminal-colors.html
+#define ANSI_COLOR_RED     "\x1b[38;2;204;0;0m"
+#define ANSI_COLOR_GREEN   "\x1b[38;2;78;154;6m"
+#define ANSI_COLOR_YELLOW  "\x1b[38;2;196;160;0m"
+#define ANSI_COLOR_BLUE    "\x1b[38;2;114;159;207m"
+#define ANSI_COLOR_MAGENTA "\x1b[38;2;117;80;123m"
+#define ANSI_COLOR_CYAN    "\x1b[38;2;6;152;154m"
+#define ANSI_COLOR_WHITE    "\x1b[38;2;211;215;207m"
+#define ANSI_COLOR_BRIGHT_BLACK    "\x1b[38;2;85;87;83m"
+#define ANSI_COLOR_BRIGHT_RED    "\x1b[38;2;239;41;41m"
+#define ANSI_COLOR_BRIGHT_GREEN    "\x1b[38;2;138;226;52m"
+#define ANSI_COLOR_BRIGHT_YELLOW    "\x1b[38;2;252;233;79m"
+#define ANSI_COLOR_BRIGHT_BLUE    "\x1b[38;2;50;175;255m"
+#define ANSI_COLOR_BRIGHT_MAGENTA    "\x1b[38;2;173;127;168m"
+#define ANSI_COLOR_BRIGHT_CYAN    "\x1b[38;2;52;226;226m"
+#define ANSI_COLOR_BRIGHT_WHITE    "\x1b[38;2;255;255;255m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 void printc(enum PrintColors colors) {
@@ -23,26 +32,53 @@ void printc(enum PrintColors colors) {
         case 0:
             printf(ANSI_COLOR_RESET);
             break;
-        case 1:
+        case red:
             printf(ANSI_COLOR_RED);
             break;
-        case 2:
+        case green:
             printf(ANSI_COLOR_GREEN);
             break;
-        case 3:
+        case yellow:
             printf(ANSI_COLOR_YELLOW);
             break;
-        case 4:
+        case blue:
             printf(ANSI_COLOR_BLUE);
             break;
-        case 5:
+        case magenta:
             printf(ANSI_COLOR_MAGENTA);
             break;
-        case 6:
+        case cyan:
             printf(ANSI_COLOR_CYAN);
             break;
-        default:
+        case white:
+            printf(ANSI_COLOR_WHITE);
             break;
+        case bright_black:
+            printf(ANSI_COLOR_BRIGHT_BLACK);
+            break;
+        case bright_red:
+            printf(ANSI_COLOR_BRIGHT_RED);
+            break;
+        case bright_green:
+            printf(ANSI_COLOR_BRIGHT_GREEN);
+            break;
+        case bright_yellow:
+            printf(ANSI_COLOR_BRIGHT_YELLOW);
+            break;
+        case bright_blue:
+            printf(ANSI_COLOR_BRIGHT_BLUE);
+            break;
+        case bright_magenta:
+            printf(ANSI_COLOR_BRIGHT_MAGENTA);
+            break;
+        case bright_cyan:
+            printf(ANSI_COLOR_BRIGHT_CYAN);
+            break;
+        case bright_white:
+            printf(ANSI_COLOR_BRIGHT_WHITE);
+            break;
+        default:
+            printf(ANSI_COLOR_RESET);
     }
 }
 

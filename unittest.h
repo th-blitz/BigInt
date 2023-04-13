@@ -19,6 +19,6 @@ typedef struct unittest {
 
 
 
-void run_tests();
+unittest malloc_UnitTest_Module(uint64_t number_of_tests);
 
 #endif

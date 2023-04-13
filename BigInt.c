@@ -551,6 +551,9 @@ void BigInt_to_string(void* a, BigIntType type, char* string) {
     }
 }
 
+
+
+
 // void print_bigint(uint128_t* a) {
 //     for (uint8_t i = a -> type; i > 0; i--) {
 //         printf("%08x", a -> array[i - 1]);

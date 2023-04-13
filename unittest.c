@@ -23,66 +23,7 @@ void is_passing(bool pass, uint32_t i, uint32_t n) {
     }
 }
 
-
-// void test_ByteQueue() {
-
-//     println("- create queue.");    
-//     ByteQueue queue = Byte_Queue();
-
-//     uint8_t a = 0x23;
-//     uint8_t b = 0x32;
-//     uint8_t c = 0x88;
-//     uint8_t d = 0x79;
-
-//     println("- append operations.");
-//     queue.append_left(&queue, a);
-//     queue.append_right(&queue, b);
-//     queue.append_right(&queue, c);
-//     queue.append_left(&queue, d);
-
-//     println("- print queue.");
-//     queue.print(&queue);
-
-//     println("- free queue.");
-//     queue.free(&queue);
-
-// }
-
-// void test_parser() {
-
-//     char* hex_string = "0x2848fa3b32c";
-//     char* base10_string = "128892875023897";
-
-//     println("- test base10 to bytequeue");
-//     println(base10_string);
-//     ByteQueue queue = one_time_string_to_bytequeue(base10_string, strlen(base10_string));
-//     queue.print_hex(&queue);
-//     println("check: 75 3A 36 07 A6 19");
-//     queue.free(&queue);
-
-//     char* base10_string2 = "00000000010000000000";
-//     println(base10_string2);
-//     queue = one_time_string_to_bytequeue( base10_string2, strlen(base10_string2));
-//     queue.print_hex(&queue);
-//     println("check: 02 54 0B E4 00");
-//     queue.free(&queue);
-
-//     char* base10_string3 = "00000000000000000000000000000000000000000000";
-//     println(base10_string3);
-//     queue = one_time_string_to_bytequeue(base10_string3, strlen(base10_string3));
-//     queue.print_hex(&queue);
-//     println("check: 00");
-//     queue.free(&queue);
-
-//     char* base10_string4 = "50914859719408375073029878579190748571350987134";
-//     println(base10_string4);
-//     queue = one_time_string_to_bytequeue(base10_string4, strlen(base10_string4));
-//     queue.print_hex(&queue);
-//     println("check: 8EB19ECEEC4689E4C06C1DE19088992E9B5F17E");
-//     queue.free(&queue);
-// }
-
-bool unittest_uint128(char* input_string, char* output_string) {
+bool unittest_uint128_init(char* input_string, char* output_string) {
     BigInt bigint = BigIntModule();
     char check_string[uint2048 * 8];
     uint128_t a = bigint.u128_from_string(input_string, strlen(input_string));
@@ -90,7 +31,7 @@ bool unittest_uint128(char* input_string, char* output_string) {
     return hex_string_compare(output_string, check_string);
 }
 
-void test_uint128() {
+void test_uint128_init() {
 
     char inputs[100][100] = {
         "0000", "000001", "9037208479874057835479", "340282366920938463463374607431768211455",
@@ -112,10 +53,60 @@ void test_uint128() {
     uint32_t i = 0;
     bool pass = false;
     while (i < number_of_tests) {
-        pass = unittest_uint128(inputs[i], outputs[i]);
+        pass = unittest_uint128_init(inputs[i], outputs[i]);
         is_passing(pass, i + 1, number_of_tests);
         i += 1;
     }
+}
+
+bool unittest_uint128_addition(char* input_string_a, char* input_string_b, char* output_string_a, uint32_t output_carry) {
+    BigInt bigint = BigIntModule();
+    char check_string[uint2048 * 8];
+    uint128_t a = bigint.u128_from_string(input_string_a, strlen(input_string_a));
+    uint128_t b = bigint.u128_from_string(input_string_b, strlen(input_string_b));
+    uint128_t c = bigint.u128();
+    uint32_t carry = bigint.add(&a, &b, &c, a.type);
+    bigint.to_string(&c, c.type, check_string);
+    return hex_string_compare(check_string, output_string_a) && (carry == output_carry);
+}
+
+void test_uint128_addition() {
+
+    char inputs[100][100] = {
+        "000", "000",
+        "000", "0001",
+        "0001", "0001",
+        "0007987", "0x8ab423",
+        "0xffffffffffffffffffffffffffffffff", "0001",
+        "0xffffffffffffffffffffffffffffffff", "0b00010",
+        "8217834017289347038978", "3493702873789749387",
+        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
+    };
+
+    char outputs[100][100] = {
+        "000",
+        "001",
+        "002",
+        "8ad356",
+        "000",
+        "0001",
+        "1bdadd77306fbd4578d",
+        "fffffffffffffffe"
+    };
+
+    char carry[100] = {
+        0, 0, 0, 0, 1, 1, 0, 1
+    };
+
+    uint32_t number_of_tests = 16;
+    uint32_t i = 0;
+    bool pass = false;
+    while (i < number_of_tests) {
+        pass = unittest_uint128_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
+        is_passing(pass, i + 2, number_of_tests);
+        i += 2;
+    }
+
 }
 
 
@@ -136,6 +127,10 @@ void run_tests() {
     // println("");
 
     printlnc("test 1. bigint uint128_t", cyan);
-    test_uint128();
+    test_uint128_init();
     i += 1;
+
+    printlnc("test 2. bigint uint128_t addition:", cyan);
+    test_uint128_addition();
+
 }

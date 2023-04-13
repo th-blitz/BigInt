@@ -150,6 +150,20 @@ bool base10_string_check(char* string, uint64_t string_len) {
     return true;
 }
 
+void base10_string_error_check(char* string, uint64_t string_len) {
+    print("- ", red);
+    uint64_t i = 0;
+    while (i < string_len) {
+        if (((string[i] >= '0') && (string[i] <= '9')) == false) {
+            printf("\x1b[33m%c\x1b[0m", string[i]);
+        } else {
+            printf("\x1b[32m%c\x1b[0m", string[i]);
+        }
+        i += 1;
+    }
+    printf("\n");
+}
+
 bool hex_string_check(char* string, uint64_t string_len) {
     for (uint64_t i = 2; i < string_len; i++) {
         if (((string[i] >= '0') && (string[i] <= '9')) || 
@@ -163,6 +177,22 @@ bool hex_string_check(char* string, uint64_t string_len) {
     return true;
 }
 
+void hex_string_error_check(char* string, uint64_t string_len) {
+    print("- ", red);
+    uint64_t i = 0;
+    while (i < string_len) {
+        if (((string[i] >= '0') && (string[i] <= '9')) || 
+        ((string[i] >= 'a') && (string[i] <= 'f')) || 
+        ((string[i] >= 'A') && (string[i] <= 'F'))) {
+            printf("\x1b[32m%c\x1b[0m", string[i]);
+        } else {
+            printf("\x1b[33m%c\x1b[0m", string[i]);
+        }
+        i += 1;
+    }
+    printf("\n");
+}
+
 bool binary_string_check(char* string, uint64_t string_len) {
     for (uint64_t i = 2; i < string_len; i++) {
         if ((string[i] == '1') || (string[i] == '0')) {
@@ -174,7 +204,27 @@ bool binary_string_check(char* string, uint64_t string_len) {
     return true;
 }
 
+void binary_string_error_check(char* string, uint64_t string_len) {
+    print("- ", red);
+    uint64_t i = 0;
+    while (i < string_len) {
+        if ((string[i] == '1') || (string[i] == '0')) {
+            printf("\x1b[32m%c\x1b[0m", string[i]);
+        } else {
+            printf("\x1b[33m%c\x1b[0m", string[i]);
+        }
+        i += 1;
+    }
+    printf("\n");
+}
 
+void one_time_string_to_bytequeue_error() {
+    print("- err: bad string error: ", red);
+    printlnc("at bigint_parser/one_time_string_to_bytequeue().", cyan);
+    print("- ", red);
+    printlnc("A string with illegal characters has been passed that ", yellow);
+    printlnc("  does not match any of the formats like 0x00 (hex) or 0b00 (binary) or base10:", yellow);
+}
 
 ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
 
@@ -205,6 +255,9 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
             }
             queue = bytequeue_from_hex_string(string + i, string_len - i);
             empty_queue_flag = false;
+        } else {
+            one_time_string_to_bytequeue_error();
+            hex_string_error_check(string, string_len);
         }
     } else if (string_type[0] == '0' && string_type[1] == 'b') {
         if (binary_string_check(string, string_len) == true) {
@@ -214,6 +267,9 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
             }
             queue = bytequeue_from_binary_string(string + i, string_len - i);
             empty_queue_flag = false;
+        } else {
+            one_time_string_to_bytequeue_error();
+            binary_string_error_check(string, string_len);
         }
     } else {
         if (base10_string_check(string, string_len) == true) {
@@ -224,16 +280,14 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
             queue = bytequeue_from_base10_string(array, string_len - i);
             free(array);
             empty_queue_flag = false;
-        }
+        } else {
+            one_time_string_to_bytequeue_error();
+            base10_string_error_check(string, string_len);
+        } 
     }
 
     if (empty_queue_flag == true) {
-        print("- err: bad string error: ", red);
-        printlnc("at bigint_parser/one_time_string_to_bytequeue().", cyan);
-        printlnc("- A bad string has been passed that does not match any of the number formats like 0x00 (hex) or 0b00 (binary) or base10.", yellow);
-        println(string);
-        print("- Hence:", green);
-        printlnc(" the bigint initialized from the above string will be zero.", yellow);
+        exit(-1); 
     }
 
     return queue;

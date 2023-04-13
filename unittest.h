@@ -2,7 +2,16 @@
 #define unittest_H
 
 
-void run_tests();
 
+#include <stdint.h>
+
+typedef struct unittest {
+    uint64_t count;
+    uint64_t total_tests;
+} unittest;
+
+
+
+void run_tests();
 
 #endif

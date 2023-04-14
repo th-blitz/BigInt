@@ -61,6 +61,13 @@ int BigInt1024_cmp(uint1024_t* a, uint1024_t* b);
 int BigInt2048_cmp(uint2048_t* a, uint2048_t* b);
 int BigInt_Compare(void* a, void* b, BigIntType type);
 
+uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c);
+uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c);
+uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c);
+uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c);
+uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c);
+uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type);
+
 void print_bigint(void* a, BigIntType type);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
@@ -473,6 +480,139 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
         }
     }
     return (uint32_t)borrow;
+}
+
+uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
+    uint64_t borrow = 0;
+    uint64_t borrow_mask = 1;
+    borrow_mask <<= 32;
+    uint64_t aa = 0;
+    uint64_t bb = 0;
+    for (uint8_t i = 0; i < uint256; i++) {
+        aa = (uint64_t)(a -> array[i]);
+        bb = (uint64_t)(b -> array[i]);
+        if (aa >= borrow) {
+            aa -= borrow;
+            borrow = 0;
+        } else {
+            borrow -= aa;
+            aa = 0;
+        }
+
+        if (aa >= bb) {
+            c -> array[i] = (uint32_t)(aa - bb);
+        } else {
+            c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
+            borrow += 1;
+        }
+    }
+    return (uint32_t)borrow;
+}
+
+uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
+    uint64_t borrow = 0;
+    uint64_t borrow_mask = 1;
+    borrow_mask <<= 32;
+    uint64_t aa = 0;
+    uint64_t bb = 0;
+    for (uint8_t i = 0; i < uint512; i++) {
+        aa = (uint64_t)(a -> array[i]);
+        bb = (uint64_t)(b -> array[i]);
+        if (aa >= borrow) {
+            aa -= borrow;
+            borrow = 0;
+        } else {
+            borrow -= aa;
+            aa = 0;
+        }
+
+        if (aa >= bb) {
+            c -> array[i] = (uint32_t)(aa - bb);
+        } else {
+            c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
+            borrow += 1;
+        }
+    }
+    return (uint32_t)borrow;
+}
+
+uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
+    uint64_t borrow = 0;
+    uint64_t borrow_mask = 1;
+    borrow_mask <<= 32;
+    uint64_t aa = 0;
+    uint64_t bb = 0;
+    for (uint8_t i = 0; i < uint1024; i++) {
+        aa = (uint64_t)(a -> array[i]);
+        bb = (uint64_t)(b -> array[i]);
+        if (aa >= borrow) {
+            aa -= borrow;
+            borrow = 0;
+        } else {
+            borrow -= aa;
+            aa = 0;
+        }
+
+        if (aa >= bb) {
+            c -> array[i] = (uint32_t)(aa - bb);
+        } else {
+            c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
+            borrow += 1;
+        }
+    }
+    return (uint32_t)borrow;
+}
+
+uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
+    uint64_t borrow = 0;
+    uint64_t borrow_mask = 1;
+    borrow_mask <<= 32;
+    uint64_t aa = 0;
+    uint64_t bb = 0;
+    for (uint8_t i = 0; i < uint2048; i++) {
+        aa = (uint64_t)(a -> array[i]);
+        bb = (uint64_t)(b -> array[i]);
+        if (aa >= borrow) {
+            aa -= borrow;
+            borrow = 0;
+        } else {
+            borrow -= aa;
+            aa = 0;
+        }
+
+        if (aa >= bb) {
+            c -> array[i] = (uint32_t)(aa - bb);
+        } else {
+            c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
+            borrow += 1;
+        }
+    }
+    return (uint32_t)borrow;
+}
+
+uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
+    uint32_t borrow = 0;
+    switch (type) {
+        case uint128:
+            borrow = BigInt128_subtract((uint128_t*)a, (uint128_t*)b, (uint128_t*)c);
+            break;
+        case uint256:
+            borrow = BigInt256_subtract((uint256_t*)a, (uint256_t*)b, (uint256_t*)c);
+            break;
+        case uint512:
+            borrow = BigInt512_subtract((uint512_t*)a, (uint512_t*)b, (uint512_t*)c);
+            break;
+        case uint1024:
+            borrow = BigInt1024_subtract((uint1024_t*)a, (uint1024_t*)b, (uint1024_t*)c);
+            break;
+        case uint2048:
+            borrow = BigInt2048_subtract((uint2048_t*)a, (uint2048_t*)b, (uint2048_t*)c);
+            break;
+        default:
+            printlnc("err: BigInt type error: at BigInt.c/BigInt_Subtract()", red);
+    }
+
+    return borrow;
 }
 
 uint32_t BigInt128_multiplication_by_base_2_pow_32(uint128_t* a, uint32_t N, uint128_t* b) {

@@ -54,6 +54,13 @@ uint32_t BigInt1024_add(uint1024_t* a, uint1024_t* b, uint1024_t* c);
 uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c);
 uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type);
 
+int BigInt128_cmp(uint128_t* a, uint128_t* b);
+int BigInt256_cmp(uint256_t* a, uint256_t* b);
+int BigInt512_cmp(uint256_t* a, uint256_t* b);
+int BigInt1024_cmp(uint1024_t* a, uint1024_t* b);
+int BigInt2048_cmp(uint2048_t* a, uint2048_t* b);
+int BigInt_Compare(void* a, void* b, BigIntType type);
+
 void print_bigint(void* a, BigIntType type);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
@@ -75,9 +82,11 @@ BigInt BigIntModule() {
     opp.u2048_from_string = BigInt2048_from_string;
     
     opp.add = BigInt_Addition;
+    opp.compare = BigInt_Compare;
 
     opp.print = print_bigint;
     opp.to_string = BigInt_to_string;
+    
     return opp;
 }
 
@@ -212,6 +221,7 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
     uint32_t j = 0;
     uint32_t k = 0;
     uint32_t i = 0;
+
     while (k < iters) {
         word = 0;
         j = 0;
@@ -596,8 +606,8 @@ void BigInt_to_string(void* a, BigIntType type, char* string) {
             }
             break;
         case uint1024:
-            string[idx] = '\0';
             idx = (uint32_t)(uint1024 * 8);
+            string[idx] = '\0';
             while (i < idx) {
                 index = ((((uint1024_t*)a) -> array[i / 8]) & word_mask[i % 8]) >> ((i % 8) * 4); 
                 string[idx - i - 1] = hex_to_char[index]; 

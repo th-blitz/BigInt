@@ -32,20 +32,20 @@ void unittest_finalize(unittest* module) {
     if (module -> fails == 0) {
         printintc(module -> passes, greens);
         print("/", whites);
-        printintc(module -> total_tests, greens);
+        printintc(module -> count, greens);
         print(") ", whites);
         printlnc("all passed", greens);
     } else if ((module -> fails != 0) && (module -> passes != 0)) {
         printintc(module -> passes, yellows);
         print("/", whites);
-        printintc(module -> total_tests, yellows);
+        printintc(module -> count, yellows);
         print(") ", whites);
         print("passed", yellows);
         print(" and ", whites);
         print("(", whites);
         printintc(module -> fails, reds);
         print("/", whites);
-        printintc(module -> total_tests, reds);
+        printintc(module -> count, reds);
         print(") ", whites);
         printlnc("failed", reds);
         print("  | fails: ", whites);
@@ -59,7 +59,7 @@ void unittest_finalize(unittest* module) {
     } else if (module -> passes == 0) {
         printintc(module -> passes, reds);
         print("/", whites);
-        printintc(module -> total_tests, reds);
+        printintc(module -> count, reds);
         print(") ", whites);
         printlnc("passes (all failed)", reds);
     }
@@ -72,6 +72,18 @@ void unittest_reset(unittest* module) {
     for (uint64_t i = 0; i < module -> total_tests; i++) {
         module -> tests[i] = 0;
     }
+}
+
+void unittest_index(unittest* module, char* index) {
+    module -> index_count += 1;
+    print("[", bright_white);
+    printintc(module -> index_count, bright_blue);
+    print("]", bright_white);
+    print(" ", white);
+    print(index, white);
+    print(" ", white);
+    unittest_finalize(module);
+    unittest_reset(module);
 }
 
 void unittest_update(unittest* module, bool pass_or_fail) {
@@ -87,6 +99,7 @@ void unittest_free(unittest* module) {
 
 unittest malloc_UnitTest_Module(uint64_t total_tests) {
     unittest module = {
+        .index_count = 0,
         .count = 0,
         .total_tests = total_tests,
         .passes = 0,
@@ -97,6 +110,7 @@ unittest malloc_UnitTest_Module(uint64_t total_tests) {
     module.update = unittest_update;
     module.finalize = unittest_finalize;
     module.free = unittest_free;
+    module.index = unittest_index;
     return module;
 }
 

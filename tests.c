@@ -64,7 +64,7 @@ bool unittest_uint2048_init(char* input, char* output) {
     return hex_string_compare(output, check_string);
 }
 
-void test_uint128_init() {
+void test_uint128_init(unittest* module) {
 
     char inputs[100][100] = {
         "0000", "000001", "9037208479874057835479", "340282366920938463463374607431768211455",
@@ -85,17 +85,14 @@ void test_uint128_init() {
     uint32_t number_of_tests = 16;
     uint32_t i = 0;
     bool pass = false;
-    unittest testing = malloc_UnitTest_Module(16);
     while (i < number_of_tests) {
         pass = unittest_uint128_init(inputs[i], outputs[i]);
-        testing.update(&testing, pass);
+        module -> update(module, pass);
         i += 1;
     }
-    testing.finalize(&testing);
-    testing.free(&testing);
 }
 
-void test_uint256_init() {
+void test_uint256_init(unittest* testing) {
     char inputs[100][100] = {
         "0000", "000001", "9037208479874057835479", "115792089237316195423570985008687907853269984665640564039457584007913129639935",
         "115792089237316195423570985008687907853269984665640564039457584007913129639937", "115792089237316195423570985008687907853269984665640564039457584007913129639936",
@@ -113,20 +110,17 @@ void test_uint256_init() {
     };
 
     int number_of_tests = 16;
-    unittest module = malloc_UnitTest_Module(number_of_tests);
     bool pass = false;
 
 
     for (int i = 0; i < number_of_tests; i++) {
         pass = unittest_uint256_init(inputs[i], outputs[i]);
-        module.update(&module, pass);
+        testing -> update(testing, pass);
     }
-    module.finalize(&module);
-    module.free(&module);
 
 }
 
-void test_uint512_init() {
+void test_uint512_init(unittest* testing) {
     char inputs[][200] = {
         "000", "00001", "9037208479874057835479", "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095",
         "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084096",
@@ -140,19 +134,16 @@ void test_uint512_init() {
     };
 
     int number_of_tests = 10;
-    unittest module = malloc_UnitTest_Module(number_of_tests);
     bool pass = false;
 
 
     for (int i = 0; i < number_of_tests; i++) {
         pass = unittest_uint512_init(inputs[i], outputs[i]);
-        module.update(&module, pass);
+        testing -> update(testing, pass);
     }
-    module.finalize(&module);
-    module.free(&module);
 }
 
-void test_uint1024_init() {
+void test_uint1024_init(unittest* testing) {
     
     char inputs[][400] = {
         "000", "00001", "9037208479874057835479", "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095",
@@ -177,18 +168,15 @@ void test_uint1024_init() {
     };
 
     int number_of_tests = 14;
-    unittest module = malloc_UnitTest_Module(number_of_tests);
     bool pass = false;
 
     for (int i = 0; i < number_of_tests; i++) {
         pass = unittest_uint1024_init(inputs[i], outputs[i]);
-        module.update(&module, pass);
+        testing -> update(testing, pass);
     }
-    module.finalize(&module);
-    module.free(&module);
 }
 
-void test_uint2048_init() {
+void test_uint2048_init(unittest* testing) {
     
     char inputs[][800] = {
         "000", "00001", "9037208479874057835479", "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095",
@@ -215,15 +203,12 @@ void test_uint2048_init() {
     };
 
     int number_of_tests = 15;
-    unittest module = malloc_UnitTest_Module(number_of_tests);
     bool pass = false;
 
     for (int i = 0; i < number_of_tests; i++) {
         pass = unittest_uint2048_init(inputs[i], outputs[i]);
-        module.update(&module, pass);
+        testing -> update(testing, pass);
     }
-    module.finalize(&module);
-    module.free(&module);
 }
 
 bool unittest_uint128_addition(char* input_string_a, char* input_string_b, char* output_string_a, uint32_t output_carry) {
@@ -247,7 +232,38 @@ bool unittest_uint256_addition(char* input_string_a, char* input_string_b, char*
     return ((bigint.compare(&c, &d, d.type) == 0) && carry == output_carry);
 }
 
-void test_uint128_addition() {
+bool unittest_uint512_addition(char* input_string_a, char* input_string_b, char* output_string, uint32_t output_carry) {
+    BigInt bigint = BigIntModule();
+    uint512_t a = bigint.u512_from_string(input_string_a, strlen(input_string_a));
+    uint512_t b = bigint.u512_from_string(input_string_b, strlen(input_string_b));
+    uint512_t d = bigint.u512_from_string(output_string, strlen(output_string));
+    uint512_t c = bigint.u512();
+    uint32_t carry = bigint.add(&a, &b, &c, a.type);
+    return ((bigint.compare(&c, &d, d.type) == 0) && carry == output_carry);
+}
+
+bool unittest_uint1024_addition(char* input_string_a, char* input_string_b, char* output_string, uint32_t output_carry) {
+    BigInt bigint = BigIntModule();
+    uint1024_t a = bigint.u1024_from_string(input_string_a, strlen(input_string_a));
+    uint1024_t b = bigint.u1024_from_string(input_string_b, strlen(input_string_b));
+    uint1024_t d = bigint.u1024_from_string(output_string, strlen(output_string));
+    uint1024_t c = bigint.u1024();
+    uint32_t carry = bigint.add(&a, &b, &c, a.type);
+    return ((bigint.compare(&c, &d, d.type) == 0) && carry == output_carry);
+}
+
+bool unittest_uint2048_addition(char* input_string_a, char* input_string_b, char* output_string, uint32_t output_carry) {
+    BigInt bigint = BigIntModule();
+    uint2048_t a = bigint.u2048_from_string(input_string_a, strlen(input_string_a));
+    uint2048_t b = bigint.u2048_from_string(input_string_b, strlen(input_string_b));
+    uint2048_t d = bigint.u2048_from_string(output_string, strlen(output_string));
+    uint2048_t c = bigint.u2048();
+    uint32_t carry = bigint.add(&a, &b, &c, a.type);
+    return ((bigint.compare(&c, &d, d.type) == 0) && carry == output_carry);
+}
+
+
+void test_uint128_addition(unittest* testing) {
 
     char inputs[100][100] = {
         "000", "000",
@@ -278,74 +294,209 @@ void test_uint128_addition() {
     uint32_t number_of_tests = 16;
     uint32_t i = 0;
     bool pass = false;
-    unittest testing = malloc_UnitTest_Module(8);
     while (i < number_of_tests) {
         pass = unittest_uint128_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
-        testing.update(&testing, pass);
+        testing -> update(testing, pass);
         i += 2;
     }
-    testing.finalize(&testing);
-    testing.free(&testing);
 }
 
-void test_uint256_addition() {
+void test_uint256_addition(unittest* testing) {
 
-    char inputs[100][100] = {
+    char* inputs[100] = {
         "000", "000",
         "000", "0001",
         "0001", "0001",
         "0007987", "0x8ab423",
-        "0xffffffffffffffffffffffffffffffff", "0001",
+        uint256_MAX, "0001",
+        uint256_MAX, "0b00010",
+        "8217834017289347038978", "3493702873789749387",
+        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
+    };
+                            
+    char* outputs[100] = {
+        "000",
+        "001",
+        "002",
+        "0x8ad356",
+        "0x0000000000000000000000000000",
+        "0x00000000000000000000000000000001",
+        "0x1bdadd77306fbd4578d",
+        "0x100000000000000000000fffffffffffffffe"
+    };
+
+    char carry[100] = {
+        0, 0, 0, 0, 1, 1, 0, 0
+    };
+
+    uint32_t number_of_tests = 16;
+    uint32_t i = 0;
+    bool pass = false;
+    while (i < number_of_tests) {
+        pass = unittest_uint256_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
+        testing -> update(testing, pass);
+        i += 2;
+    }
+}
+
+
+
+void test_uint512_addition(unittest* testing) {
+
+    char* inputs[100] = {
+        "000", "000",
+        "000", "0001",
+        "0001", "0001",
+        "0007987", "0x8ab423",
+        uint512_MAX, "0001",
         "0xffffffffffffffffffffffffffffffff", "0b00010",
         "8217834017289347038978", "3493702873789749387",
         "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
     };
                             
-    char outputs[100][100] = {
+    char* outputs[100] = {
         "000",
         "001",
         "002",
         "0x8ad356",
-        "0x100000000000000000000000000000000",
+        "0x0000000000000000000000000000",
         "0x100000000000000000000000000000001",
         "0x1bdadd77306fbd4578d",
         "0x100000000000000000000fffffffffffffffe"
     };
 
     char carry[100] = {
-        0, 0, 0, 0, 0, 0, 0, 0
+        0, 0, 0, 0, 1, 0, 0, 0
     };
 
     uint32_t number_of_tests = 16;
     uint32_t i = 0;
     bool pass = false;
-    unittest testing = malloc_UnitTest_Module(8);
     while (i < number_of_tests) {
-        pass = unittest_uint256_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
-        testing.update(&testing, pass);
+        pass = unittest_uint512_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
+        testing -> update(testing, pass);
         i += 2;
     }
-    testing.finalize(&testing);
-    testing.free(&testing);
 }
+
+
+
+void test_uint1024_addition(unittest* testing) {
+
+    char* inputs[100] = {
+        "000", "000",
+        "000", "0001",
+        "0001", "0001",
+        "0007987", "0x8ab423",
+        uint1024_MAX, "0001",
+        "0xffffffffffffffffffffffffffffffff", "0b00010",
+        "8217834017289347038978", "3493702873789749387",
+        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
+    };
+                            
+    char* outputs[100] = {
+        "000",
+        "001",
+        "002",
+        "0x8ad356",
+        "0x0000000000000000000000000000",
+        "0x100000000000000000000000000000001",
+        "0x1bdadd77306fbd4578d",
+        "0x100000000000000000000fffffffffffffffe"
+    };
+
+    char carry[100] = {
+        0, 0, 0, 0, 1, 0, 0, 0
+    };
+
+    uint32_t number_of_tests = 16;
+    uint32_t i = 0;
+    bool pass = false;
+    while (i < number_of_tests) {
+        pass = unittest_uint1024_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
+        testing -> update(testing, pass);
+        i += 2;
+    }
+}
+
+
+
+void test_uint2048_addition(unittest* testing) {
+
+    char* inputs[100] = {
+        "000", "000",
+        "000", "0001",
+        "0001", "0001",
+        "0007987", "0x8ab423",
+        uint2048_MAX, "0001",
+        "0xffffffffffffffffffffffffffffffff", "0b00010",
+        "8217834017289347038978", "3493702873789749387",
+        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
+    };
+                            
+    char* outputs[100] = {
+        "000",
+        "001",
+        "002",
+        "0x8ad356",
+        "0x0000000000000000000000000000",
+        "0x100000000000000000000000000000001",
+        "0x1bdadd77306fbd4578d",
+        "0x100000000000000000000fffffffffffffffe"
+    };
+
+    char carry[100] = {
+        0, 0, 0, 0, 1, 0, 0, 0
+    };
+
+    uint32_t number_of_tests = 16;
+    uint32_t i = 0;
+    bool pass = false;
+    while (i < number_of_tests) {
+        pass = unittest_uint2048_addition(inputs[i], inputs[i + 1], outputs[i / 2], carry[i / 2]);
+        testing -> update(testing, pass);
+        i += 2;
+    }
+}
+
+
 
 void run_tests() {
 
     enum PrintColors test_colors = bright_magenta;
+    unittest testing_module = malloc_UnitTest_Module(20);
 
-    printlnc("1. bigint uint128_t declaration test.", test_colors);
-    test_uint128_init();
-    printlnc("2. bigint uint256_t declaration test.", test_colors);
-    test_uint256_init();
-    printlnc("3. bigint uint512_t declaration test.", test_colors);
-    test_uint512_init();
-    printlnc("4. bigint uint1024_t declaration test.", test_colors);
-    test_uint1024_init();
-    printlnc("5. bigint uint2048_t declaration test.", test_colors);
-    test_uint2048_init();
-    printlnc("6. bigint uint128_t addition test:", test_colors);
-    test_uint128_addition();
-    printlnc("7. bigint uint256_t addition test.", test_colors);
-    test_uint256_addition();
+    test_uint128_init(&testing_module);
+    testing_module.index(&testing_module, "u128 init");
+
+    test_uint256_init(&testing_module);
+    testing_module.index(&testing_module, "u256 init");
+
+    test_uint512_init(&testing_module);
+    testing_module.index(&testing_module, "u512 init");
+
+    test_uint1024_init(&testing_module);
+    testing_module.index(&testing_module, "u1024 init"); 
+
+    test_uint2048_init(&testing_module);
+    testing_module.index(&testing_module, "u2048 init"); 
+
+    test_uint128_addition(&testing_module);
+    testing_module.index(&testing_module, "u128 addition"); 
+
+    test_uint256_addition(&testing_module);
+    testing_module.index(&testing_module, "u256 addition");
+
+    test_uint512_addition(&testing_module);
+    testing_module.index(&testing_module, "u512 addition");
+
+    test_uint1024_addition(&testing_module);
+    testing_module.index(&testing_module, "u1024 addition");
+
+    test_uint2048_addition(&testing_module);
+    testing_module.index(&testing_module, "u2048_addition");
+
+
+    testing_module.free(&testing_module);
 
 }

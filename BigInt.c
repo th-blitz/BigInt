@@ -615,9 +615,8 @@ uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
     return borrow;
 }
 
-uint32_t BigInt128_multiplication_by_base_2_pow_32(uint128_t* a, uint32_t N, uint128_t* b) {
+uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
     uint64_t carry = 1;
-    uint64_t n = (uint64_t)N;
     for (uint8_t i = 0; i < uint128; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
@@ -625,6 +624,72 @@ uint32_t BigInt128_multiplication_by_base_2_pow_32(uint128_t* a, uint32_t N, uin
     }
     return (uint32_t)carry;
 }
+
+uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
+    uint64_t carry = 1;
+    for (uint8_t i = 0; i < uint256; i++) {
+        carry = ((uint64_t)(a -> array[i]) * n) + carry;
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
+    uint64_t carry = 1;
+    for (uint8_t i = 0; i < uint512; i++) {
+        carry = ((uint64_t)(a -> array[i]) * n) + carry;
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b) {
+    uint64_t carry = 1;
+    for (uint8_t i = 0; i < uint1024; i++) {
+        carry = ((uint64_t)(a -> array[i]) * n) + carry;
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
+    uint64_t carry = 1;
+    for (uint8_t i = 0; i < uint2048; i++) {
+        carry = ((uint64_t)(a -> array[i]) * n) + carry;
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type) {
+    uint32_t carry = (uint64_t)N;
+    switch (type) {
+        case uint128:
+            carry = BigInt128_multiplication_by_N( (uint128_t*)a, carry, (uint128_t*)b);
+            break;
+        case uint256:
+            carry = BigInt256_multiplication_by_N( (uint256_t*)a, carry, (uint256_t*)b);
+            break;
+        case uint512:
+            carry = BigInt512_multiplication_by_N( (uint512_t*)a, carry, (uint512_t*)b);
+            break;
+        case uint1024:
+            carry = BigInt1024_multiplication_by_N( (uint1024_t*)a, carry, (uint1024_t*)b);
+            break;
+        case uint2048:
+            carry = BigInt2048_multiplication_by_N( (uint2048_t*)a, carry, (uint2048_t*)b);
+            break;
+        default:
+            printlnc("err: BigInt type error: at BigInt.c/BigInt_Multiply_by_N()", red);
+    }
+
+    return carry;
+}
+
 
 void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
     

@@ -54,10 +54,9 @@ typedef struct BigInt {
     uint2048_t (*u2048_from_string)(char* string, uint64_t string_len);
 
     uint32_t (*add)(void* a, void* b, void* c, BigIntType type);
-
     int (*compare)(void* a, void* b, BigIntType type);
-
     uint32_t (*multiply_by_n)(void* a, uint32_t n, void* b, BigIntType type);
+    uint32_t (*subtract)(void* a, void* b, void* c, BigIntType type);
 
     void (*print)(void* a, BigIntType type);
     void (*to_string)(void* a, BigIntType type, char* string);

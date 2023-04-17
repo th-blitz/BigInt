@@ -101,6 +101,7 @@ BigInt BigIntModule() {
     opp.print = print_bigint;
     opp.to_string = BigInt_to_string;
     opp.multiply_by_n = BigInt_Multiply_by_N;
+    opp.subtract = BigInt_Subtract;
     
     return opp;
 }
@@ -465,20 +466,15 @@ int BigInt_Compare(void* a, void* b, BigIntType type) {
 
 uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 1;
+    uint64_t borrow_mask = 0x1ffffffff;
     borrow_mask <<= 32;
     uint64_t aa = 0;
     uint64_t bb = 0;
     for (uint8_t i = 0; i < uint128; i++) {
         aa = (uint64_t)(a -> array[i]);
         bb = (uint64_t)(b -> array[i]);
-        if (aa >= borrow) {
-            aa -= borrow;
-            borrow = 0;
-        } else {
-            borrow -= aa;
-            aa = 0;
-        }
+        
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0;  
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);
@@ -492,20 +488,15 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
 
 uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 1;
+    uint64_t borrow_mask = 0x1ffffffff;
     borrow_mask <<= 32;
     uint64_t aa = 0;
     uint64_t bb = 0;
     for (uint8_t i = 0; i < uint256; i++) {
         aa = (uint64_t)(a -> array[i]);
         bb = (uint64_t)(b -> array[i]);
-        if (aa >= borrow) {
-            aa -= borrow;
-            borrow = 0;
-        } else {
-            borrow -= aa;
-            aa = 0;
-        }
+        
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);
@@ -519,20 +510,15 @@ uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
 
 uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 1;
+    uint64_t borrow_mask = 0x1ffffffff;
     borrow_mask <<= 32;
     uint64_t aa = 0;
     uint64_t bb = 0;
     for (uint8_t i = 0; i < uint512; i++) {
         aa = (uint64_t)(a -> array[i]);
         bb = (uint64_t)(b -> array[i]);
-        if (aa >= borrow) {
-            aa -= borrow;
-            borrow = 0;
-        } else {
-            borrow -= aa;
-            aa = 0;
-        }
+        
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);
@@ -546,20 +532,15 @@ uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
 
 uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 1;
+    uint64_t borrow_mask = 0x1ffffffff;
     borrow_mask <<= 32;
     uint64_t aa = 0;
     uint64_t bb = 0;
     for (uint8_t i = 0; i < uint1024; i++) {
         aa = (uint64_t)(a -> array[i]);
         bb = (uint64_t)(b -> array[i]);
-        if (aa >= borrow) {
-            aa -= borrow;
-            borrow = 0;
-        } else {
-            borrow -= aa;
-            aa = 0;
-        }
+        
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);
@@ -573,20 +554,15 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
 
 uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 1;
+    uint64_t borrow_mask = 0x1ffffffff;
     borrow_mask <<= 32;
     uint64_t aa = 0;
     uint64_t bb = 0;
     for (uint8_t i = 0; i < uint2048; i++) {
         aa = (uint64_t)(a -> array[i]);
         bb = (uint64_t)(b -> array[i]);
-        if (aa >= borrow) {
-            aa -= borrow;
-            borrow = 0;
-        } else {
-            borrow -= aa;
-            aa = 0;
-        }
+        
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);

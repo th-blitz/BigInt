@@ -611,7 +611,7 @@ void test_uint1024_compare(unittest * module) {
     }
 }
 
-void test_uint2048_compare(unittest * module) {
+void test_uint2048_compare(unittest* module) {
     char* inputs[100] = {
         "000", "000",
         "0001", "0001",
@@ -635,6 +635,214 @@ void test_uint2048_compare(unittest * module) {
         module -> update(module, unittest_u2048_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
     }
 }
+
+
+bool unittest_u128_subtract(char* input_a, char* input_b, char* output, uint32_t borrow) {
+    BigInt bigint = BigIntModule();
+    uint128_t a = bigint.u128_from_string(input_a, strlen(input_a));
+    uint128_t b = bigint.u128_from_string(input_b, strlen(input_b));
+    uint128_t c = bigint.u128_from_string(output, strlen(output));
+    uint32_t borr = bigint.subtract(&a, &b, &a, c.type);
+    return (bigint.compare(&c, &a, a.type) == 0) && (borr == borrow);
+}
+
+bool unittest_u256_subtract(char* input_a, char* input_b, char* output, uint32_t borrow) {
+    BigInt bigint = BigIntModule();
+    uint256_t a = bigint.u256_from_string(input_a, strlen(input_a));
+    uint256_t b = bigint.u256_from_string(input_b, strlen(input_b));
+    uint256_t c = bigint.u256_from_string(output, strlen(output));
+    uint32_t borr = bigint.subtract(&a, &b, &a, c.type);
+    return (bigint.compare(&c, &a, a.type) == 0) && (borr == borrow);
+}
+
+bool unittest_u512_subtract(char* input_a, char* input_b, char* output, uint32_t borrow) {
+    BigInt bigint = BigIntModule();
+    uint512_t a = bigint.u512_from_string(input_a, strlen(input_a));
+    uint512_t b = bigint.u512_from_string(input_b, strlen(input_b));
+    uint512_t c = bigint.u512_from_string(output, strlen(output));
+    uint32_t borr = bigint.subtract(&a, &b, &a, c.type);
+    return (bigint.compare(&c, &a, a.type) == 0) && (borr == borrow);
+}
+
+bool unittest_u1024_subtract(char* input_a, char* input_b, char* output, uint32_t borrow) {
+    BigInt bigint = BigIntModule();
+    uint1024_t a = bigint.u1024_from_string(input_a, strlen(input_a));
+    uint1024_t b = bigint.u1024_from_string(input_b, strlen(input_b));
+    uint1024_t c = bigint.u1024_from_string(output, strlen(output));
+    uint32_t borr = bigint.subtract(&a, &b, &a, c.type);
+    return (bigint.compare(&c, &a, a.type) == 0) && (borr == borrow);
+}
+
+bool unittest_u2048_subtract(char* input_a, char* input_b, char* output, uint32_t borrow) {
+    BigInt bigint = BigIntModule();
+    uint2048_t a = bigint.u2048_from_string(input_a, strlen(input_a));
+    uint2048_t b = bigint.u2048_from_string(input_b, strlen(input_b));
+    uint2048_t c = bigint.u2048_from_string(output, strlen(output));
+    uint32_t borr = bigint.subtract(&a, &b, &a, c.type);
+    return (bigint.compare(&c, &a, a.type) == 0) && (borr == borrow);
+}
+
+void test_u128_subtract(unittest* module) {
+    char* inputs[100] = {
+        uint128_MAX, "0001",
+        "002", uint128_MAX,
+        "0000", "001",
+        "0101000", "999",
+        "0x100000000100000000", "0xffffffff"
+
+    };
+
+    char* outputs[100] = {
+        uint128_MAX_minus_one,
+        "0003",
+        uint128_MAX,
+        "100001",
+        "0x100000000000000001"
+    };
+
+    uint32_t borrow[100] = {
+        0,
+        1,
+        1,
+        0,
+        0
+    };
+
+    int number_of_tests = 10;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u128_subtract(inputs[i], inputs[i + 1], outputs[i / 2], borrow[i / 2]));
+    }
+}
+
+void test_u256_subtract(unittest* module) {
+    char* inputs[100] = {
+        uint256_MAX, "0001",
+        "002", uint256_MAX,
+        "0000", "001",
+        "0101000", "999",
+        "0x100000000100000000", "0xffffffff"
+
+    };
+
+    char* outputs[100] = {
+        uint256_MAX_minus_one,
+        "0003",
+        uint256_MAX,
+        "100001",
+        "0x100000000000000001"
+    };
+
+    uint32_t borrow[100] = {
+        0,
+        1,
+        1,
+        0,
+        0
+    };
+
+    int number_of_tests = 10;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u256_subtract(inputs[i], inputs[i + 1], outputs[i / 2], borrow[i / 2]));
+    }
+}
+
+void test_u512_subtract(unittest* module) {
+    char* inputs[100] = {
+        uint512_MAX, "0001",
+        "002", uint512_MAX,
+        "0000", "001",
+        "0101000", "999",
+        "0x100000000100000000", "0xffffffff"
+
+    };
+
+    char* outputs[100] = {
+        uint512_MAX_minus_one,
+        "0003",
+        uint512_MAX,
+        "100001",
+        "0x100000000000000001"
+    };
+
+    uint32_t borrow[100] = {
+        0,
+        1,
+        1,
+        0,
+        0
+    };
+
+    int number_of_tests = 10;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u512_subtract(inputs[i], inputs[i + 1], outputs[i / 2], borrow[i / 2]));
+    }
+}
+
+void test_u1024_subtract(unittest* module) {
+    char* inputs[100] = {
+        uint1024_MAX, "0001",
+        "002", uint1024_MAX,
+        "0000", "001",
+        "0101000", "999",
+        "0x100000000100000000", "0xffffffff"
+
+    };
+
+    char* outputs[100] = {
+        uint1024_MAX_minus_one,
+        "0003",
+        uint1024_MAX,
+        "100001",
+        "0x100000000000000001"
+    };
+
+    uint32_t borrow[100] = {
+        0,
+        1,
+        1,
+        0,
+        0
+    };
+
+    int number_of_tests = 10;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u1024_subtract(inputs[i], inputs[i + 1], outputs[i / 2], borrow[i / 2]));
+    }
+}
+
+void test_u2048_subtract(unittest* module) {
+    char* inputs[100] = {
+        uint2048_MAX, "0001",
+        "002", uint2048_MAX,
+        "0000", "001",
+        "0101000", "999",
+        "0x100000000100000000", "0xffffffff"
+
+    };
+
+    char* outputs[100] = {
+        uint2048_MAX_minus_one,
+        "0003",
+        uint2048_MAX,
+        "100001",
+        "0x100000000000000001"
+    };
+
+    uint32_t borrow[100] = {
+        0,
+        1,
+        1,
+        0,
+        0
+    };
+
+    int number_of_tests = 10;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u2048_subtract(inputs[i], inputs[i + 1], outputs[i / 2], borrow[i / 2]));
+    }
+}
+
+
 
 void run_tests() {
 
@@ -685,6 +893,21 @@ void run_tests() {
 
     test_uint2048_compare(&testing_module);
     testing_module.index(&testing_module, "u2048 comparision");
+
+    test_u128_subtract(&testing_module);
+    testing_module.index(&testing_module, "u128 subtract");
+
+    test_u256_subtract(&testing_module);
+    testing_module.index(&testing_module, "u256 subtract");
+
+    test_u512_subtract(&testing_module);
+    testing_module.index(&testing_module, "u512 subtract");
+
+    test_u1024_subtract(&testing_module);
+    testing_module.index(&testing_module, "u1024 subtract");
+
+    test_u2048_subtract(&testing_module);
+    testing_module.index(&testing_module, "u2048 subtract");
 
     testing_module.free(&testing_module);
 }

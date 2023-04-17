@@ -4,6 +4,7 @@
 
 
 #include <stdint.h>
+#include <time.h>
 
 typedef struct unittest {
     uint64_t index_count;
@@ -14,6 +15,7 @@ typedef struct unittest {
     void (*finalize)(struct unittest*);
     void (*free)(struct unittest*);
     void (*index)(struct unittest*, char* index);
+    clock_t clock_start;
     uint64_t passes;
     uint64_t fails;
     uint8_t* tests;

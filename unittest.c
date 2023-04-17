@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 
 #include "utils.h"
@@ -28,7 +29,8 @@ void unittest_finalize(unittest* module) {
     enum PrintColors yellows = bright_yellow;
     enum PrintColors greens = bright_green;
 
-    print("- tests (", whites);
+    print(" |", bright_cyan);
+    print(" tests (", whites);
     if (module -> fails == 0) {
         printintc(module -> passes, greens);
         print("/", whites);
@@ -74,6 +76,12 @@ void unittest_reset(unittest* module) {
     }
 }
 
+void unittest_clock(unittest* module) {
+    print("|", bright_cyan);
+    print(" time: ", bright_white);
+    printf("%f", (double)(clock() - (module -> clock_start)) / CLOCKS_PER_SEC);
+}
+
 void unittest_index(unittest* module, char* index) {
     module -> index_count += 1;
     print("[", bright_white);
@@ -82,8 +90,10 @@ void unittest_index(unittest* module, char* index) {
     print(" ", white);
     print(index, white);
     print(" ", white);
+    unittest_clock(module);
     unittest_finalize(module);
     unittest_reset(module);
+    module -> clock_start = clock();
 }
 
 void unittest_update(unittest* module, bool pass_or_fail) {
@@ -104,6 +114,7 @@ unittest malloc_UnitTest_Module(uint64_t total_tests) {
         .total_tests = total_tests,
         .passes = 0,
         .fails = 0,
+        .clock_start = clock()
     };
     module.tests = (uint8_t*)malloc(total_tests * sizeof(uint8_t));
     module.reset = unittest_reset;

@@ -57,6 +57,8 @@ typedef struct BigInt {
 
     int (*compare)(void* a, void* b, BigIntType type);
 
+    uint32_t (*multiply_by_n)(void* a, uint32_t n, void* b, BigIntType type);
+
     void (*print)(void* a, BigIntType type);
     void (*to_string)(void* a, BigIntType type, char* string);
 

@@ -13,10 +13,23 @@
 
 
 static char* uint128_MAX = "340282366920938463463374607431768211455";
+static char* uint128_MAX_minus_one = "340282366920938463463374607431768211454";
+
 static char* uint256_MAX = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+static char* uint256_MAX_minus_one = "115792089237316195423570985008687907853269984665640564039457584007913129639934";
+
+
 static char* uint512_MAX = "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095";
+static char* uint512_MAX_minus_one = "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094";
+
+
 static char* uint1024_MAX = "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137215";
+static char* uint1024_MAX_minus_one = "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137214";
+
+
 static char* uint2048_MAX = "32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230655";
+static char* uint2048_MAX_minus_one = "32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230654";
+
 
 static char* uint128_OVERFLOW = "340282366920938463463374607431768211456";
 static char* uint256_OVERFLOW = "115792089237316195423570985008687907853269984665640564039457584007913129639936";
@@ -431,7 +444,9 @@ void test_uint2048_addition(unittest* testing) {
         uint2048_MAX, "0001",
         "0xffffffffffffffffffffffffffffffff", "0b00010",
         "8217834017289347038978", "3493702873789749387",
-        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff"
+        "0xffffffffffffffff", "0xffffffffffffffffffffffffffffffffffff",
+        uint2048_OVERFLOW, uint2048_MAX,
+        uint2048_MAX, "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe"
     };
                             
     char* outputs[100] = {
@@ -442,14 +457,16 @@ void test_uint2048_addition(unittest* testing) {
         "0x0000000000000000000000000000",
         "0x100000000000000000000000000000001",
         "0x1bdadd77306fbd4578d",
-        "0x100000000000000000000fffffffffffffffe"
+        "0x100000000000000000000fffffffffffffffe",
+        uint2048_MAX,
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd"
     };
 
     char carry[100] = {
-        0, 0, 0, 0, 1, 0, 0, 0
+        0, 0, 0, 0, 1, 0, 0, 0, 0, 1
     };
 
-    uint32_t number_of_tests = 16;
+    uint32_t number_of_tests = 20;
     uint32_t i = 0;
     bool pass = false;
     while (i < number_of_tests) {
@@ -459,7 +476,165 @@ void test_uint2048_addition(unittest* testing) {
     }
 }
 
+bool unittest_u128_compare(char* input_a, char* input_b, int output) {
+    BigInt bigint = BigIntModule();
+    uint128_t a = bigint.u128_from_string(input_a, strlen(input_a));
+    uint128_t b = bigint.u128_from_string(input_b, strlen(input_b));
+    return bigint.compare(&a, &b, a.type) == output;
+}
 
+bool unittest_u256_compare(char* input_a, char* input_b, int output) {
+    BigInt bigint = BigIntModule();
+    uint256_t a = bigint.u256_from_string(input_a, strlen(input_a));
+    uint256_t b = bigint.u256_from_string(input_b, strlen(input_b));
+    return bigint.compare(&a, &b, a.type) == output;
+}
+
+bool unittest_u1024_compare(char* input_a, char* input_b, int output) {
+    BigInt bigint = BigIntModule();
+    uint1024_t a = bigint.u1024_from_string(input_a, strlen(input_a));
+    uint1024_t b = bigint.u1024_from_string(input_b, strlen(input_b));
+    return bigint.compare(&a, &b, a.type) == output;
+}
+
+bool unittest_u512_compare(char* input_a, char* input_b, int output) {
+    BigInt bigint = BigIntModule();
+    uint512_t a = bigint.u512_from_string(input_a, strlen(input_a));
+    uint512_t b = bigint.u512_from_string(input_b, strlen(input_b));
+    return bigint.compare(&a, &b, a.type) == output;
+}
+
+bool unittest_u2048_compare(char* input_a, char* input_b, int output) {
+    BigInt bigint = BigIntModule();
+    uint2048_t a = bigint.u2048_from_string(input_a, strlen(input_a));
+    uint2048_t b = bigint.u2048_from_string(input_b, strlen(input_b));
+    return bigint.compare(&a, &b, a.type) == output;
+}
+
+void test_uint128_compare(unittest * module) {
+    char* inputs[100] = {
+        "000", "000",
+        "0001", "0001",
+        uint128_MAX, uint128_MAX,
+        uint128_OVERFLOW, uint128_MAX,
+        "0020", uint128_MAX,
+        uint128_MAX, uint128_MAX_minus_one
+    };
+
+    int outputs[100] = {
+        0, 
+        0,
+        0,
+        -1,
+        -1,
+        1,
+    };
+
+    int number_of_tests = 12;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u128_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_uint256_compare(unittest * module) {
+    char* inputs[100] = {
+        "000", "000",
+        "0001", "0001",
+        uint256_MAX, uint256_MAX,
+        uint256_OVERFLOW, uint256_MAX,
+        "0020", uint256_MAX,
+        uint256_MAX, uint256_MAX_minus_one
+    };
+
+    int outputs[100] = {
+        0, 
+        0,
+        0,
+        -1,
+        -1,
+        1,
+    };
+
+    int number_of_tests = 12;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u256_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_uint512_compare(unittest * module) {
+    char* inputs[100] = {
+        "000", "000",
+        "0001", "0001",
+        uint512_MAX, uint512_MAX,
+        uint512_OVERFLOW, uint512_MAX,
+        "0020", uint512_MAX,
+        uint512_MAX, uint512_MAX_minus_one
+    };
+
+    int outputs[100] = {
+        0, 
+        0,
+        0,
+        -1,
+        -1,
+        1,
+    };
+
+    int number_of_tests = 12;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u512_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_uint1024_compare(unittest * module) {
+    char* inputs[100] = {
+        "000", "000",
+        "0001", "0001",
+        uint1024_MAX, uint1024_MAX,
+        uint1024_OVERFLOW, uint1024_MAX,
+        "0020", uint1024_MAX,
+        uint1024_MAX, uint1024_MAX_minus_one
+    };
+
+    int outputs[100] = {
+        0, 
+        0,
+        0,
+        -1,
+        -1,
+        1,
+    };
+
+    int number_of_tests = 12;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u1024_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_uint2048_compare(unittest * module) {
+    char* inputs[100] = {
+        "000", "000",
+        "0001", "0001",
+        uint2048_MAX, uint2048_MAX,
+        uint2048_OVERFLOW, uint2048_MAX,
+        "0020", uint2048_MAX,
+        uint2048_MAX, uint2048_MAX_minus_one
+    };
+
+    int outputs[100] = {
+        0, 
+        0,
+        0,
+        -1,
+        -1,
+        1,
+    };
+
+    int number_of_tests = 12;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u2048_compare(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
 
 void run_tests() {
 
@@ -494,9 +669,22 @@ void run_tests() {
     testing_module.index(&testing_module, "u1024 addition");
 
     test_uint2048_addition(&testing_module);
-    testing_module.index(&testing_module, "u2048_addition");
+    testing_module.index(&testing_module, "u2048 addition");
 
+    test_uint128_compare(&testing_module);
+    testing_module.index(&testing_module, "u128 comparision");
+
+    test_uint256_compare(&testing_module);
+    testing_module.index(&testing_module, "u256 comparision");
+
+    test_uint512_compare(&testing_module);
+    testing_module.index(&testing_module, "u512 comparision");
+
+    test_uint1024_compare(&testing_module);
+    testing_module.index(&testing_module, "u1024 comparision");
+
+    test_uint2048_compare(&testing_module);
+    testing_module.index(&testing_module, "u2048 comparision");
 
     testing_module.free(&testing_module);
-
 }

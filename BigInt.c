@@ -68,6 +68,13 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c);
 uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c);
 uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type);
 
+uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b);
+uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b);
+uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b);
+uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b);
+uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b);
+uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type);
+
 void print_bigint(void* a, BigIntType type);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
@@ -93,6 +100,7 @@ BigInt BigIntModule() {
 
     opp.print = print_bigint;
     opp.to_string = BigInt_to_string;
+    opp.multiply_by_n = BigInt_Multiply_by_N;
     
     return opp;
 }

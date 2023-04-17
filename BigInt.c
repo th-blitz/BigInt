@@ -600,7 +600,7 @@ uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
 }
 
 uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
-    uint64_t carry = 1;
+    uint64_t carry = 0;
     for (uint8_t i = 0; i < uint128; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
@@ -610,7 +610,7 @@ uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
 }
 
 uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
-    uint64_t carry = 1;
+    uint64_t carry = 0;
     for (uint8_t i = 0; i < uint256; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
@@ -620,7 +620,7 @@ uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
 }
 
 uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
-    uint64_t carry = 1;
+    uint64_t carry = 0;
     for (uint8_t i = 0; i < uint512; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
@@ -630,7 +630,7 @@ uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
 }
 
 uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b) {
-    uint64_t carry = 1;
+    uint64_t carry = 0;
     for (uint8_t i = 0; i < uint1024; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
@@ -640,7 +640,7 @@ uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b
 }
 
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
-    uint64_t carry = 1;
+    uint64_t carry = 0;
     for (uint8_t i = 0; i < uint2048; i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;

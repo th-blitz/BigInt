@@ -843,6 +843,217 @@ void test_u2048_subtract(unittest* module) {
 }
 
 
+bool unittest_u128_multiply_by_n(char* input, uint32_t n, char* output, uint32_t output_n) {
+    BigInt bigint = BigIntModule();
+    uint128_t a = bigint.u128_from_string(input, strlen(input));
+    uint128_t b = bigint.u128_from_string(output, strlen(output));
+    uint32_t out = bigint.multiply_by_n(&a, n, &a, a.type);
+    return (out == output_n) && (bigint.compare(&a, &b, a.type) == 0);
+}
+
+bool unittest_u256_multiply_by_n(char* input, uint32_t n, char* output, uint32_t output_n) {
+    BigInt bigint = BigIntModule();
+    uint256_t a = bigint.u256_from_string(input, strlen(input));
+    uint256_t b = bigint.u256_from_string(output, strlen(output));
+    uint32_t out = bigint.multiply_by_n(&a, n, &a, a.type);
+    return (out == output_n) && (bigint.compare(&a, &b, a.type) == 0);
+}
+
+bool unittest_u1024_multiply_by_n(char* input, uint32_t n, char* output, uint32_t output_n) {
+    BigInt bigint = BigIntModule();
+    uint1024_t a = bigint.u1024_from_string(input, strlen(input));
+    uint1024_t b = bigint.u1024_from_string(output, strlen(output));
+    uint32_t out = bigint.multiply_by_n(&a, n, &a, a.type);
+    return (out == output_n) && (bigint.compare(&a, &b, a.type) == 0);
+}
+
+bool unittest_u512_multiply_by_n(char* input, uint32_t n, char* output, uint32_t output_n) {
+    BigInt bigint = BigIntModule();
+    uint512_t a = bigint.u512_from_string(input, strlen(input));
+    uint512_t b = bigint.u512_from_string(output, strlen(output));
+    uint32_t out = bigint.multiply_by_n(&a, n, &a, a.type);
+    return (out == output_n) && (bigint.compare(&a, &b, a.type) == 0);
+}
+
+bool unittest_u2048_multiply_by_n(char* input, uint32_t n, char* output, uint32_t output_n) {
+    BigInt bigint = BigIntModule();
+    uint2048_t a = bigint.u2048_from_string(input, strlen(input));
+    uint2048_t b = bigint.u2048_from_string(output, strlen(output));
+    uint32_t out = bigint.multiply_by_n(&a, n, &a, a.type);
+    return (out == output_n) && (bigint.compare(&a, &b, a.type) == 0);
+}
+
+
+void test_u128_multiply_by_n(unittest* module) {
+
+    char* inputs[100] = {
+        "7893187237782",
+        uint128_MAX,
+        uint128_MAX,
+        uint128_MAX,
+    };
+    uint32_t input_n[100] = {
+        2,
+        2,
+        0,
+        0xffffffff,
+    }; 
+    
+    char* outputs[100] = {
+        "15786374475564",
+        uint128_MAX_minus_one,
+        "0000",
+        "0xffffffffffffffffffffffff00000001",
+    };
+    uint32_t output_n[100] = {
+        0,
+        1,
+        0,
+        0xfffffffe,
+    };
+
+    int number_of_tests = 4;
+    for (int i = 0; i < number_of_tests; i += 1) {
+        module -> update(module, unittest_u128_multiply_by_n(inputs[i], input_n[i], outputs[i], output_n[i]));
+    }
+}
+
+void test_u256_multiply_by_n(unittest* module) {
+
+    char* inputs[100] = {
+        "7893187237782",
+        uint256_MAX,
+        uint256_MAX,
+        uint256_MAX,
+    };
+    uint32_t input_n[100] = {
+        2,
+        2,
+        0,
+        0xffffffff,
+    }; 
+    
+    char* outputs[100] = {
+        "15786374475564",
+        uint256_MAX_minus_one,
+        "0000",
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000001",
+    };
+    uint32_t output_n[100] = {
+        0,
+        1,
+        0,
+        0xfffffffe,
+    };
+
+    int number_of_tests = 4;
+    for (int i = 0; i < number_of_tests; i += 1) {
+        module -> update(module, unittest_u256_multiply_by_n(inputs[i], input_n[i], outputs[i], output_n[i]));
+    }
+}
+
+void test_u1024_multiply_by_n(unittest* module) {
+
+    char* inputs[100] = {
+        "7893187237782",
+        uint1024_MAX,
+        uint1024_MAX,
+        uint1024_MAX,
+    };
+    uint32_t input_n[100] = {
+        2,
+        2,
+        0,
+        0xffffffff,
+    }; 
+    
+    char* outputs[100] = {
+        "15786374475564",
+        uint1024_MAX_minus_one,
+        "0000",
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000001",
+    };
+    uint32_t output_n[100] = {
+        0,
+        1,
+        0,
+        0xfffffffe,
+    };
+
+    int number_of_tests = 4;
+    for (int i = 0; i < number_of_tests; i += 1) {
+        module -> update(module, unittest_u1024_multiply_by_n(inputs[i], input_n[i], outputs[i], output_n[i]));
+    }
+}
+
+void test_u512_multiply_by_n(unittest* module) {
+
+    char* inputs[100] = {
+        "7893187237782",
+        uint512_MAX,
+        uint512_MAX,
+        uint512_MAX,
+    };
+    uint32_t input_n[100] = {
+        2,
+        2,
+        0,
+        0xffffffff,
+    }; 
+    
+    char* outputs[100] = {
+        "15786374475564",
+        uint512_MAX_minus_one,
+        "0000",
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000001",
+    };
+    uint32_t output_n[100] = {
+        0,
+        1,
+        0,
+        0xfffffffe,
+    };
+
+    int number_of_tests = 4;
+    for (int i = 0; i < number_of_tests; i += 1) {
+        module -> update(module, unittest_u512_multiply_by_n(inputs[i], input_n[i], outputs[i], output_n[i]));
+    }
+}
+
+void test_u2048_multiply_by_n(unittest* module) {
+
+    char* inputs[100] = {
+        "7893187237782",
+        uint2048_MAX,
+        uint2048_MAX,
+        uint2048_MAX,
+    };
+    uint32_t input_n[100] = {
+        2,
+        2,
+        0,
+        0xffffffff,
+    }; 
+    
+    char* outputs[100] = {
+        "15786374475564",
+        uint2048_MAX_minus_one,
+        "0000",
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000001",
+    };
+    uint32_t output_n[100] = {
+        0,
+        1,
+        0,
+        0xfffffffe,
+    };
+
+    int number_of_tests = 4;
+    for (int i = 0; i < number_of_tests; i += 1) {
+        module -> update(module, unittest_u2048_multiply_by_n(inputs[i], input_n[i], outputs[i], output_n[i]));
+    }
+}
+
 
 void run_tests() {
 
@@ -908,6 +1119,21 @@ void run_tests() {
 
     test_u2048_subtract(&testing_module);
     testing_module.index(&testing_module, "u2048 subtract");
+
+    test_u128_multiply_by_n(&testing_module);
+    testing_module.index(&testing_module, "u128 multiply by n");
+
+    test_u256_multiply_by_n(&testing_module);
+    testing_module.index(&testing_module, "u256 multiply by n");
+
+    test_u512_multiply_by_n(&testing_module);
+    testing_module.index(&testing_module, "u512 multiply by n");
+
+    test_u1024_multiply_by_n(&testing_module);
+    testing_module.index(&testing_module, "u1024 multiply by n");
+
+    test_u2048_multiply_by_n(&testing_module);
+    testing_module.index(&testing_module, "u2048 multiply by n");
 
     testing_module.free(&testing_module);
 }

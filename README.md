@@ -4,7 +4,7 @@
 - Available uint types are ``` uint128_t ```, ``` uint256_t ```, ``` uint512_t ```, ``` uint1024_t ``` and ``` uint2048_t ```.
 - All uint types are stored on *``` stack memory ```* by default for the *``` best performance ```*. 
 
-# BigInt Documentation.
+# BigInt Documentation
  ### 1. **Import the BigInt module :**
 ```c
 

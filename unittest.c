@@ -79,7 +79,7 @@ void unittest_reset(unittest* module) {
 void unittest_clock(unittest* module) {
     print("|", bright_cyan);
     print(" time: ", bright_white);
-    printf("%f", (double)(clock() - (module -> clock_start)) / CLOCKS_PER_SEC);
+    printf("%f", (float)(clock() - (module -> clock_start)) / CLOCKS_PER_SEC);
 }
 
 void unittest_index(unittest* module, char* index) {

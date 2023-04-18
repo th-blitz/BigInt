@@ -75,6 +75,12 @@ uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b);
 uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type);
 
+void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c);
+void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c);
+void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c);
+void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c);
+void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type);
+
 void print_bigint(void* a, BigIntType type);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
@@ -102,6 +108,7 @@ BigInt BigIntModule() {
     opp.to_string = BigInt_to_string;
     opp.multiply_by_n = BigInt_Multiply_by_N;
     opp.subtract = BigInt_Subtract;
+    opp.multiply = BigInt_Multiplication;
     
     return opp;
 }
@@ -378,6 +385,7 @@ uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type) {
             carry = BigInt2048_add(a, b, c);
             break;
         default:
+            printlnc("BigInt type error; at BigInt.c/BigInt_Addition()", red);
             break;
     }
     
@@ -459,6 +467,7 @@ int BigInt_Compare(void* a, void* b, BigIntType type) {
             cmp = BigInt2048_cmp(a, b);
             break;
         default:
+            printlnc("BigInt type error: at BigInt.c/BigInt_Compare()", red);
             break;
     }
     return cmp;
@@ -697,6 +706,97 @@ void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
         c -> array[i] = (uint32_t)carries[i];
     }
 }
+
+void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c) {
+    
+    uint64_t carry = 0;
+    uint64_t carries[uint512] = {0};
+    uint64_t aa;
+    uint64_t bb;
+
+    for (uint32_t i = 0; i < uint256; i++) {
+        for (uint32_t j = 0; j < uint256; j++) {
+            aa = (uint64_t)(a -> array[i]);
+            bb = (uint64_t)(b -> array[j]);
+            carry = carries[i + j];
+            carry = (aa * bb) + carry;
+            carries[i + j] = (carry & 0x00000000ffffffff);
+            carries[i + j + 1] += (carry >> 32);
+        }
+    }
+
+    for (uint8_t i = 0; i < uint512; i++) {
+        c -> array[i] = (uint32_t)carries[i];
+    }
+}
+
+void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c) {
+    
+    uint64_t carry = 0;
+    uint64_t carries[uint1024] = {0};
+    uint64_t aa;
+    uint64_t bb;
+
+    for (uint32_t i = 0; i < uint512; i++) {
+        for (uint32_t j = 0; j < uint512; j++) {
+            aa = (uint64_t)(a -> array[i]);
+            bb = (uint64_t)(b -> array[j]);
+            carry = carries[i + j];
+            carry = (aa * bb) + carry;
+            carries[i + j] = (carry & 0x00000000ffffffff);
+            carries[i + j + 1] += (carry >> 32);
+        }
+    }
+
+    for (uint8_t i = 0; i < uint1024; i++) {
+        c -> array[i] = (uint32_t)carries[i];
+    }
+}
+
+void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c) {
+    
+    uint64_t carry = 0;
+    uint64_t carries[uint2048] = {0};
+    uint64_t aa;
+    uint64_t bb;
+
+    for (uint32_t i = 0; i < uint1024; i++) {
+        for (uint32_t j = 0; j < uint1024; j++) {
+            aa = (uint64_t)(a -> array[i]);
+            bb = (uint64_t)(b -> array[j]);
+            carry = carries[i + j];
+            carry = (aa * bb) + carry;
+            carries[i + j] = (carry & 0x00000000ffffffff);
+            carries[i + j + 1] += (carry >> 32);
+        }
+    }
+
+    for (uint8_t i = 0; i < uint2048; i++) {
+        c -> array[i] = (uint32_t)carries[i];
+    }
+}
+
+void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type) {
+    
+    switch (type) {
+        case uint128:
+            BigInt128_mulitplication((uint128_t*) a, (uint128_t*) b, (uint256_t*) c);
+            break;
+        case uint256:
+            BigInt256_mulitplication((uint256_t*) a, (uint256_t*) b, (uint512_t*) c);
+            break;
+        case uint512:
+            BigInt512_mulitplication((uint512_t*) a, (uint512_t*) b, (uint1024_t*) c);
+            break;
+        case uint1024:
+            BigInt1024_mulitplication((uint1024_t*) a, (uint1024_t*) b, (uint2048_t*) c);
+            break;
+        default:
+            printlnc("err: BigInt type error: at BigInt.c/BigInt_Multiplication()", red);
+    }
+}
+
+
 
 void print_bigint(void* a, BigIntType type) {
     bool leading_zeros_flag = true;

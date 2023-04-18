@@ -13,21 +13,26 @@
 
 
 static char* uint128_MAX = "340282366920938463463374607431768211455";
+static char* uint128_MAX_hex = "0xffffffffffffffffffffffffffffffff";
 static char* uint128_MAX_minus_one = "340282366920938463463374607431768211454";
 
 static char* uint256_MAX = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+static char* uint256_MAX_hex = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 static char* uint256_MAX_minus_one = "115792089237316195423570985008687907853269984665640564039457584007913129639934";
 
 
 static char* uint512_MAX = "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095";
+static char* uint512_MAX_hex = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 static char* uint512_MAX_minus_one = "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094";
 
 
 static char* uint1024_MAX = "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137215";
+static char* uint1024_MAX_hex = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 static char* uint1024_MAX_minus_one = "179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137214";
 
 
 static char* uint2048_MAX = "32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230655";
+static char* uint2048_MAX_hex = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 static char* uint2048_MAX_minus_one = "32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230654";
 
 
@@ -616,10 +621,10 @@ void test_uint2048_compare(unittest* module) {
     char* inputs[100] = {
         "000", "000",
         "0001", "0001",
-        uint2048_MAX, uint2048_MAX,
-        uint2048_OVERFLOW, uint2048_MAX,
-        "0020", uint2048_MAX,
-        uint2048_MAX, uint2048_MAX_minus_one
+        uint2048_MAX_hex, uint2048_MAX_hex,
+        uint2048_OVERFLOW, uint2048_MAX_hex,
+        "0020", uint2048_MAX_hex,
+        uint2048_MAX_hex, uint2048_MAX_minus_one
     };
 
     int outputs[100] = {
@@ -1055,6 +1060,131 @@ void test_u2048_multiply_by_n(unittest* module) {
     }
 }
 
+bool unittest_u128_multiplication(char* input_a, char* input_b, char* output) {
+    BigInt bigint = BigIntModule();
+    uint128_t a = bigint.u128_from_string(input_a, strlen(input_a));
+    uint128_t b = bigint.u128_from_string(input_b, strlen(input_b));
+    uint256_t d = bigint.u256_from_string(output, strlen(output));
+    uint256_t c = bigint.u256();
+    bigint.multiply(&a, &b, &c, a.type);
+    return bigint.compare(&c, &d, d.type) == 0;
+}
+
+bool unittest_u256_multiplication(char* input_a, char* input_b, char* output) {
+    BigInt bigint = BigIntModule();
+    uint256_t a = bigint.u256_from_string(input_a, strlen(input_a));
+    uint256_t b = bigint.u256_from_string(input_b, strlen(input_b));
+    uint512_t d = bigint.u512_from_string(output, strlen(output));
+    uint512_t c = bigint.u512();
+    bigint.multiply(&a, &b, &c, a.type);
+    return bigint.compare(&c, &d, d.type) == 0;
+}
+
+bool unittest_u512_multiplication(char* input_a, char* input_b, char* output) {
+    BigInt bigint = BigIntModule();
+    uint512_t a = bigint.u512_from_string(input_a, strlen(input_a));
+    uint512_t b = bigint.u512_from_string(input_b, strlen(input_b));
+    uint1024_t d = bigint.u1024_from_string(output, strlen(output));
+    uint1024_t c = bigint.u1024();
+    bigint.multiply(&a, &b, &c, a.type);
+    return bigint.compare(&c, &d, d.type) == 0;
+}
+
+bool unittest_u1024_multiplication(char* input_a, char* input_b, char* output) {
+    BigInt bigint = BigIntModule();
+    uint1024_t a = bigint.u1024_from_string(input_a, strlen(input_a));
+    uint1024_t b = bigint.u1024_from_string(input_b, strlen(input_b));
+    uint2048_t d = bigint.u2048_from_string(output, strlen(output));
+    uint2048_t c = bigint.u2048();
+    bigint.multiply(&a, &b, &c, a.type);
+    return bigint.compare(&c, &d, d.type) == 0;
+}
+
+void test_u128_multiplication(unittest* module) {
+    char* inputs[100] = {
+        "3927483274392874329287490283", "08900973027140187379828930371804",
+        uint128_MAX, "01",
+        uint128_MAX, "00",
+        uint128_MAX, uint128_MAX,
+    };
+
+    char* outputs[100] = {
+        "34958422689915197795547752176903269511406264703693227180532",
+        uint128_MAX,
+        "00",
+        "0xfffffffffffffffffffffffffffffffe00000000000000000000000000000001"
+    };
+
+    int number_of_tests = 8;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u128_multiplication(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_u256_multiplication(unittest* module) {
+    char* inputs[100] = {
+        "3927483274392874329287490283", "08900973027140187379828930371804",
+        uint256_MAX, "01",
+        uint256_MAX, "00",
+        uint256_MAX, uint256_MAX,
+    };
+
+    char* outputs[100] = {
+        "34958422689915197795547752176903269511406264703693227180532",
+        uint256_MAX,
+        "00",
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0000000000000000000000000000000000000000000000000000000000000001"
+    };
+
+    int number_of_tests = 8;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u256_multiplication(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_u512_multiplication(unittest* module) {
+    char* inputs[100] = {
+        "3927483274392874329287490283", "08900973027140187379828930371804",
+        uint512_MAX, "01",
+        uint512_MAX, "00",
+        uint512_MAX, uint512_MAX,
+    };
+
+    char* outputs[100] = {
+        "34958422689915197795547752176903269511406264703693227180532",
+        uint512_MAX,
+        "00",
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+    };
+
+    int number_of_tests = 8;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u512_multiplication(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
+void test_u1024_multiplication(unittest* module) {
+    char* inputs[100] = {
+        "3927483274392874329287490283", "08900973027140187379828930371804",
+        uint1024_MAX, "01",
+        uint1024_MAX, "00",
+        uint1024_MAX, uint1024_MAX,
+    };
+
+    char* outputs[100] = {
+        "34958422689915197795547752176903269511406264703693227180532",
+        uint1024_MAX,
+        "00",
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+    };
+
+
+    int number_of_tests = 8;
+    for (int i = 0; i < number_of_tests; i += 2) {
+        module -> update(module, unittest_u1024_multiplication(inputs[i], inputs[i + 1], outputs[i / 2]));
+    }
+}
+
 
 void run_tests() {
 
@@ -1135,6 +1265,18 @@ void run_tests() {
 
     test_u2048_multiply_by_n(&testing_module);
     testing_module.index(&testing_module, "u2048 multiply by n");
+    
+    test_u128_multiplication(&testing_module);
+    testing_module.index(&testing_module, "u128 mulitply");
+
+    test_u256_multiplication(&testing_module);
+    testing_module.index(&testing_module, "u256 mulitply");
+
+    test_u512_multiplication(&testing_module);
+    testing_module.index(&testing_module, "u512 mulitply");
+
+    test_u1024_multiplication(&testing_module);
+    testing_module.index(&testing_module, "u1024 mulitply");
 
     testing_module.free(&testing_module);
 }

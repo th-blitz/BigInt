@@ -42,8 +42,8 @@ bigint.print(&b, b.type);
 ### **The ```.u128_from_string( char* str , int str_len )``` method.**
 ```c
 
-uint128_t c = bigint.u128_from_string("9037208479874057835479", strlen("9037208479874057835479"));
-uint128_t d = bigint.u128_from_string("0x1e9e8762f43491d13d7", strlen("0x1e9e8762f43491d13d7"));
+uint128_t c = bigint.u128_from_string("9037208479874057835479", 22);
+uint128_t d = bigint.u128_from_string("0x1e9e8762f43491d13d7", 21);
 uint128_t e = bigint.u128_from_string("0b1111010011110100001110110001011110100001101001001000111010001001111010111", 75);
 
 bigint.print(&c, uint128); // can also be written as "bigint.print(&c, c.type)".

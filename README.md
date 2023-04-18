@@ -1,8 +1,8 @@
 # A BigInt library in C
 
-- My project to build the best BigInt library focused on design (ease of use) and high performance.
-- Available uint types: uint128_t, uint256_t, uint512_t, uint1024_t and uint2048_t.
-- All uint types and its logical operations run on stack memory for the best performance.
+- My project to build the best BigInt library focused on *``` design ```* (ease of use) and *``` high performance ```*.
+- Available uint types are ``` uint128_t ```, ``` uint256_t ```, ``` uint512_t ```, ``` uint1024_t ``` and ``` uint2048_t ```.
+- All uint types are stored on *``` stack memory ```* by default for the *``` best performance ```*. 
 
 # BigInt module Documentation.
  ### 1. **Import the BigInt module :**
@@ -21,7 +21,7 @@ int main() {
 - *This will provide better auto suggestions by IDEs and also will be easier to implement user defined custom functions.*
 
 ### 2. **To create a 128 bit unsigned integer initialized to zero by default use :**
-### **The ```.u128( void )``` method.**
+### **The ``` .u128( void ) ``` method.**
 ```c
 
 uint128_t a = bigint.u128();
@@ -39,7 +39,7 @@ bigint.print(&b, b.type);
 ```
 
 ### 3. **To create a 128 bit unsigend integer from a string use :**
-### **The ```.u128_from_string( char* str , int str_len )``` method.**
+### **The ``` .u128_from_string( char* str , int str_len ) ``` method.**
 ```c
 
 uint128_t c = bigint.u128_from_string("9037208479874057835479", 22);
@@ -51,6 +51,7 @@ bigint.print(&d, uint128);
 bigint.print(&e, e.type); // The e.type, c.type and d.type are nothing by uint128 enums.
 ```
 *The above method supports all three string formats: base10, hexadecimal ( must start with 0x ) and binary ( also must start with 0b ).*
+
 **Output :**
 ```sh
 000001e9e8762f43491d13d7
@@ -59,7 +60,7 @@ bigint.print(&e, e.type); // The e.type, c.type and d.type are nothing by uint12
 ```
 
 ### 4. **To add two bigint integers use :**
-### **The ```.add( uint128_t* a, uint128_t* b, uint128_t* output, BigIntType type )``` method.**
+### **The ``` .add( uint128_t* a, uint128_t* b, uint128_t* output, BigIntType type ) ``` method.**
 ```c
 
 uint128_t output = bigint.u128();

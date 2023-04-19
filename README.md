@@ -49,7 +49,6 @@ int main() {
     unsigned int N = 536;
     unsigned int carry_a = 0;
     unsigned int carry_b = 0;
-    uint32_t overflow_check = 0;
 
     while (N > 1) {
         carry_a = bigint.multiply_by_n(&a, N, &a, a.type); // same as { ba x N } where ba is nothing but one 4096 bit int represented as 2 2048 bit int digits. 

@@ -94,9 +94,9 @@ int main() {
     unsigned int carry_b = 0;
 
     while (N > 1) {
-                                                                                                                 1223 (carry) 
+        //                                                                                                       1223 (carry) 
         // Below is same as arithmetic multiplication using carrys for a 5 digit number as 12345 x 6 = 74070 i.e 12345 (uint2048 [5]) x 6 (N)
-                                                                                                                 74070 (Result as in uint2048 [5])
+        //                                                                                                       74070 (Result as in uint2048 [5])
         for (int i = 4; i > -1; i--) {
             carry_b = bigint.multiply_by_n(&a_large_num[i], N, &a_large_num[i], uint2048);
             bigint.add_by_n(&a_large_num[i], carry_a, &a_large_num[i], uint2048);

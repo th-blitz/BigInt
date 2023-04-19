@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 
 
@@ -7,54 +8,30 @@
 
 int main() {
 
-    // char a_string[] = "340282366920938463463374607431768211455";
-    // char b_string[] = "340282366920938463463374607431768211455";
-    
-    // DecimalArray a = decimal_array_from_string(a_string);
-    // DecimalArray b = decimal_array_from_string(b_string);
-    // DecimalArray c = decimal_array_addition(a, b);
+    // run_tests();
 
-    // print_decimal_array(a);
-    // print_decimal_array(b);
-    // print_decimal_array(c);
-    // printf("\n");
+    BigInt bigint = BigIntModule();
 
-    // ByteStack a_stack = decimal_to_binary(a);
-    // ByteStack b_stack = decimal_to_binary(b);
-    // ByteStack c_stack = decimal_to_binary(c);
 
-    // free_decimal_array(a);
-    // free_decimal_array(b);
-    // free_decimal_array(c);
+    uint2048_t a = bigint.u2048_from_string("01", 2);
+    uint2048_t b = bigint.u2048();
+    unsigned int N = 536;
+    unsigned int carry_a = 0;
+    unsigned int carry_b = 0;
+    unsigned int overflow = 0;
+    uint32_t overflow_check = 0;
 
-    // a_stack.print(&a_stack);
-    // b_stack.print(&b_stack);
-    // c_stack.print(&c_stack);    
-    
-    // uint128_t bb = BigInt128_from_bytes(&b_stack);
-    // uint128_t aa = BigInt128_from_bytes(&a_stack);
-    
-    // uint128_t cc = BigInt128();
-
-    // print_bigint(&aa, aa.type);
-    // print_bigint(&bb, bb.type);
-
-    // uint32_t carry = BigInt128_subtract(&aa, &bb, &cc);
-    // printf("%d ", carry);
-    // print_bigint(&cc, cc.type);
-
-    // uint256_t dd = BigInt256();
-
-    // BigInt128_mulitplication(&aa, &bb, &dd);
-    // print_bigint(&dd, dd.type);
-    
-    // a_stack.free(&a_stack);
-    // b_stack.free(&b_stack);
-    // c_stack.free(&c_stack);
-
-    // printf("%d\n", BigInt128_cmp(&aa, &bb));
-
-    run_tests();
+    while (N > 1) {
+        carry_a = bigint.multiply_by_n(&a, N, &a, a.type);
+        carry_b = bigint.multiply_by_n(&b, N, &b, b.type);
+        bigint.add_by_n(&b, carry_a, &b, b.type);
+        if (carry_b > 0) {
+            printf("overflow\n");
+        }
+        N -= 1;
+    }
+    bigint.print(&b, b.type);
+    bigint.print(&a, a.type);
 
     return 0;
 }

@@ -75,6 +75,13 @@ uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b);
 uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type);
 
+uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b);
+uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b);
+uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b);
+uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b);
+uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b);
+uint32_t BigInt_Add_by_N(void* a, uint32_t N, void* b, BigIntType type);
+
 void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c);
 void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c);
 void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c);
@@ -109,6 +116,7 @@ BigInt BigIntModule() {
     opp.multiply_by_n = BigInt_Multiply_by_N;
     opp.subtract = BigInt_Subtract;
     opp.multiply = BigInt_Multiplication;
+    opp.add_by_n = BigInt_Add_by_N;
     
     return opp;
 }
@@ -659,7 +667,7 @@ uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b
 }
 
 uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type) {
-    uint32_t carry = (uint64_t)N;
+    uint64_t carry = (uint64_t)N;
     switch (type) {
         case uint128:
             carry = BigInt128_multiplication_by_N( (uint128_t*)a, carry, (uint128_t*)b);
@@ -683,9 +691,83 @@ uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type) {
     return carry;
 }
 
+uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
+    
+    for (uint8_t i = 0; i < uint128; i++) {
+        carry += (uint64_t)(a -> array[i]);
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
+    
+    for (uint8_t i = 0; i < uint256; i++) {
+        carry += (uint64_t)(a -> array[i]);
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
+    
+    for (uint8_t i = 0; i < uint512; i++) {
+        carry += (uint64_t)(a -> array[i]);
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
+    
+    for (uint8_t i = 0; i < uint1024; i++) {
+        carry += (uint64_t)(a -> array[i]);
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b) {
+    
+    for (uint8_t i = 0; i < uint2048; i++) {
+        carry += (uint64_t)(a -> array[i]);
+        b -> array[i] = (uint32_t)carry;
+        carry >>= 32;
+    }
+    return (uint32_t)carry;
+}
+
+uint32_t BigInt_Add_by_N(void* a, uint32_t N, void* b, BigIntType type) {
+    uint64_t carry = (uint64_t)N;
+    switch (type) {
+        case uint128:
+            carry = BigInt128_add_by_N( (uint128_t*)a, carry, (uint128_t*)b);
+            break;
+        case uint256:
+            carry = BigInt256_add_by_N( (uint256_t*)a, carry, (uint256_t*)b);
+            break;
+        case uint512:
+            carry = BigInt512_add_by_N( (uint512_t*)a, carry, (uint512_t*)b);
+            break;
+        case uint1024:
+            carry = BigInt1024_add_by_N( (uint1024_t*)a, carry, (uint1024_t*)b);
+            break;
+        case uint2048:
+            carry = BigInt2048_add_by_N( (uint2048_t*)a, carry, (uint2048_t*)b);
+            break;
+        default:
+            printlnc("err: BigInt type error: at BigInt.c/BigInt_Add_by_N()", red);
+    }
+
+    return carry;
+}
 
 void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
-    
+
     uint64_t carry = 0;
     uint64_t carries[uint256] = {0};
     uint64_t aa;

@@ -1277,6 +1277,6 @@ void run_tests() {
 
     test_u1024_multiplication(&testing_module);
     testing_module.index(&testing_module, "u1024 mulitply");
-
+    
     testing_module.free(&testing_module);
 }

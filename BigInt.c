@@ -124,27 +124,27 @@ BigInt BigIntModule() {
 
 
 uint128_t BigInt128() {
-    uint128_t type = {.array = {0}, .type = uint128};
+    uint128_t type = {.array = {0}, .type = uint128, .len = 1};
     return type;
 }
 
 uint256_t BigInt256() {
-    uint256_t type = {.array = {0}, .type = uint256};
+    uint256_t type = {.array = {0}, .type = uint256, .len = 1};
     return type;
 }
 
 uint512_t BigInt512() {
-    uint512_t type = {.array = {0}, .type = uint512};
+    uint512_t type = {.array = {0}, .type = uint512, .len = 1};
     return type;
 }
 
 uint1024_t BigInt1024() {
-    uint1024_t type = {.array = {0}, .type = uint1024};
+    uint1024_t type = {.array = {0}, .type = uint1024, .len = 1};
     return type;
 }
 
 uint2048_t BigInt2048() {
-    uint2048_t type = {.array = {0}, .type = uint2048};
+    uint2048_t type = {.array = {0}, .type = uint2048, .len = 1};
     return type;
 }
 
@@ -170,6 +170,7 @@ uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
         integer.array[i] = word;
         i += 1;
     }
+    integer.len = (i == 0) ? 1: i;
     return integer;
 }
 
@@ -201,6 +202,7 @@ uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
         integer.array[i] = word;
         i += 1;
     }
+    integer.len = (i == 0) ? 1: i;
     return integer;
 }
 
@@ -232,6 +234,7 @@ uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
         integer.array[i] = word;
         i += 1;
     }
+    integer.len = (i == 0) ? 1: i;
     return integer;
 }
 
@@ -265,6 +268,7 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
         integer.array[i] = word;
         i += 1;
     }
+    integer.len = (i == 0) ? 1: i;
     return integer;
 }
 
@@ -297,6 +301,7 @@ uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
         integer.array[i] = word;
         i += 1;
     }
+    integer.len = (i == 0) ? 1: i;
     return integer;
 }
 
@@ -618,51 +623,61 @@ uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
 
 uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint128; i++) {
+    uint8_t i;
+    for (uint8_t i = 0; (i < a -> len) || (carry != 0 && i < uint128); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
     }
+    (n > 0) ? (b -> len = i): (b -> len = 1);
     return (uint32_t)carry;
 }
 
 uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint256; i++) {
+    uint8_t i;
+    for (uint8_t i = 0; (i < a -> len) || (carry != 0 && i < uint256); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
     }
+    (n > 0) ? (b -> len = i): (b -> len = 1);
     return (uint32_t)carry;
 }
 
 uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint512; i++) {
+    uint8_t i;
+    for (i = 0; (i < a -> len) || (carry != 0 && i < uint512); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
     }
+    (n > 0) ? (b -> len = i): (b -> len = 1);
     return (uint32_t)carry;
 }
 
 uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint1024; i++) {
+    uint8_t i;
+    for (i = 0; (i < a -> len) || (carry != 0 && i < uint1024); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
     }
+    (n > 0) ? (b -> len = i): (b -> len = 1);
     return (uint32_t)carry;
 }
 
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint2048; i++) {
+    uint8_t i;
+    for (i = 0; (i < a -> len) || (carry != 0 && i < uint2048); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
     }
+    (n > 0) ? (b -> len = i): (b -> len = 1);
     return (uint32_t)carry;
 }
 
@@ -693,7 +708,7 @@ uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type) {
 
 uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
     
-    for (uint8_t i = 0; i < uint128; i++) {
+    for (uint8_t i = 0; (i < uint128) && (carry > 0); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
@@ -703,7 +718,7 @@ uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
 
 uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
     
-    for (uint8_t i = 0; i < uint256; i++) {
+    for (uint8_t i = 0; (i < uint256) && (carry > 0); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
@@ -713,7 +728,7 @@ uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
 
 uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
     
-    for (uint8_t i = 0; i < uint512; i++) {
+    for (uint8_t i = 0; (i < uint512) && (carry > 0); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
@@ -723,7 +738,7 @@ uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
 
 uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
     
-    for (uint8_t i = 0; i < uint1024; i++) {
+    for (uint8_t i = 0; (i < uint1024) && (carry > 0); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;
@@ -733,7 +748,7 @@ uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
 
 uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b) {
     
-    for (uint8_t i = 0; i < uint2048; i++) {
+    for (uint8_t i = 0; (i < uint2048) && (carry > 0); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
         carry >>= 32;

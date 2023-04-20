@@ -17,26 +17,31 @@ typedef enum BigIntType {
 typedef struct uint128_tt {
     uint32_t array[uint128];
     BigIntType type;
+    uint8_t len;
 } uint128_t;
 
 typedef struct uint256_tt {
     uint32_t array[uint256];
     BigIntType type;
+    uint8_t len;
 } uint256_t;
 
 typedef struct uint512_tt {
     uint32_t array[uint512];
     BigIntType type;
+    uint8_t len;
 } uint512_t;
 
 typedef struct uint1024_tt {
     uint32_t array[uint1024];
     BigIntType type;
+    uint8_t len;
 } uint1024_t;
 
 typedef struct uint2048_tt {
     uint32_t array[uint2048];
     BigIntType type;
+    uint8_t len;
 } uint2048_t;
 
 

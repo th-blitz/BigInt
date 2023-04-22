@@ -192,6 +192,7 @@ uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
     uint8_t j = 0;
     uint8_t k = 0;
     uint8_t i = 0;
+    uint8_t leading_zeros = 0;
     while (k < iters) {
         word = 0;
         j = 0;
@@ -202,9 +203,10 @@ uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
             k += 1;
         }
         integer.array[i] = word;
+        (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i == 0) ? 1: i;
+    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -224,6 +226,7 @@ uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
     uint8_t j = 0;
     uint8_t k = 0;
     uint8_t i = 0;
+    uint8_t leading_zeros = 0;
     while (k < iters) {
         word = 0;
         j = 0;
@@ -234,9 +237,10 @@ uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
             k += 1;
         }
         integer.array[i] = word;
+        (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i == 0) ? 1: i;
+    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -257,7 +261,7 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
     uint32_t j = 0;
     uint32_t k = 0;
     uint32_t i = 0;
-
+    uint8_t leading_zeros = 0;
     while (k < iters) {
         word = 0;
         j = 0;
@@ -268,9 +272,10 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
             k += 1;
         }
         integer.array[i] = word;
+        (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i == 0) ? 1: i;
+    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -291,6 +296,7 @@ uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
     uint32_t j = 0;
     uint32_t k = 0;
     uint32_t i = 0;
+    uint8_t leading_zeros = 0;
     while (k < iters) {
         word = 0;
         j = 0;
@@ -301,9 +307,10 @@ uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
             k += 1;
         }
         integer.array[i] = word;
+        (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i == 0) ? 1: i;
+    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 

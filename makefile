@@ -1,10 +1,10 @@
 
 files := BigInt.o ByteQueue.o unittest.o utils.o bigint_parser.o tests.o
 
-main: $(files) main.o main.out 
+main: $(files) main.out 
 	./main.out
 
-test: $(files) test.o test.out
+test: $(files) test.out
 	./test.out
 
 

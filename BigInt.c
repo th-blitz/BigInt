@@ -158,6 +158,7 @@ uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
     uint8_t j = 0;
     uint8_t k = 0;
     uint8_t i = 0;
+    uint8_t leading_zeros = 0;
     while (k < iters) {
         word = 0;
         j = 0;
@@ -168,9 +169,10 @@ uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
             k += 1;
         }
         integer.array[i] = word;
+        (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i == 0) ? 1: i;
+    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -312,69 +314,73 @@ uint2048_t BigInt2048_from_string(char* string, uint64_t string_len) {
     return integer;
 }
 
-// uint128_t BigInt128_from_bytes(ByteStack* bytes) {
-//     uint128_t integer = {.array = {0}, .type = uint128};
-//     ByteStack_node* node_pointer = bytes -> head;
-//     uint32_t word;
-//     for (uint8_t i = uint128; i > 0; i--) {
-//         word = 0;
-//         for (uint8_t j = 0; j < 4; j++) {
-//             word <<= 8;
-//             word |= (uint32_t)(node_pointer -> value);
-//             node_pointer = node_pointer -> next;
-//         }
-//         integer.array[i - 1] = word;
-//     }
-//     return integer;
-// }
-
 uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint128; i++) {
+    uint8_t i, leading_zeros = 0;
+    uint8_t size = MAX(a -> len, b -> len);
+    for (i = 0; i < size || (carry != 0 && i < uint128); i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt256_add(uint256_t* a, uint256_t* b, uint256_t* c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint256; i++) {
+    uint8_t i, leading_zeros = 0;
+    uint8_t size = MAX(a -> len, b -> len);
+    for (i = 0; i < size || (carry != 0 && i < uint256); i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt512_add(uint512_t* a, uint512_t* b, uint512_t* c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint512; i++) {
+    uint8_t i, leading_zeros = 0;
+    uint8_t size = MAX(a -> len, b -> len);
+    for (i = 0; i < size || (carry != 0 && i < uint512); i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt1024_add(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint1024; i++) {
+    uint8_t i, leading_zeros = 0;
+    uint8_t size = MAX(a -> len, b -> len);
+    for (i = 0; i < size || (carry != 0 && i < uint1024); i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
     uint64_t carry = 0;
-    for (uint8_t i = 0; i < uint2048; i++) {
+    uint8_t i, leading_zeros = 0;
+    uint8_t size = MAX(a -> len, b -> len);
+    for (i = 0; i < size || (carry != 0 && i < uint2048); i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
@@ -407,6 +413,13 @@ uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type) {
 
 
 int BigInt128_cmp(uint128_t* a, uint128_t* b) {
+
+    if (a -> len > b -> len) {
+        return 1;
+    } else if (a -> len < b -> len) {
+        return -1;
+    } 
+
     for (uint32_t i = uint128; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
@@ -418,6 +431,7 @@ int BigInt128_cmp(uint128_t* a, uint128_t* b) {
 }
 
 int BigInt256_cmp(uint256_t* a, uint256_t* b) {
+
     for (uint32_t i = uint256; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
@@ -429,6 +443,7 @@ int BigInt256_cmp(uint256_t* a, uint256_t* b) {
 }
 
 int BigInt512_cmp(uint256_t* a, uint256_t* b) {
+
     for (uint32_t i = uint512; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
@@ -440,6 +455,7 @@ int BigInt512_cmp(uint256_t* a, uint256_t* b) {
 }
 
 int BigInt1024_cmp(uint1024_t* a, uint1024_t* b) {
+
     for (uint32_t i = uint1024; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
@@ -451,6 +467,7 @@ int BigInt1024_cmp(uint1024_t* a, uint1024_t* b) {
 }
 
 int BigInt2048_cmp(uint2048_t* a, uint2048_t* b) {
+
     for (uint32_t i = uint2048; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
@@ -491,7 +508,7 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t borrow_mask = 0x100000000;
     uint64_t aa;
     uint64_t bb;
-    uint8_t i, leading_zeros;
+    uint8_t i, leading_zeros = 0;
     uint8_t steps = MAX(a -> len, b -> len);
     for (i = 0; i < steps || (borrow != 0 && i < uint128); i++) {
         aa = (uint64_t)(a -> array[i]); 
@@ -507,7 +524,7 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
         }
         (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
-    c -> len = (uint128 - leading_zeros) > 0 ? (uint128 - leading_zeros) : 1;
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
@@ -516,7 +533,7 @@ uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
     uint64_t borrow_mask = 0x100000000;
     uint64_t aa;
     uint64_t bb;
-    uint8_t i, leading_zeros;
+    uint8_t i, leading_zeros = 0;
     uint8_t steps = MAX(a -> len, b -> len);
     for (i = 0; i < steps || (borrow != 0 && i < uint256); i++) {
         aa = (uint64_t)(a -> array[i]); 
@@ -532,7 +549,7 @@ uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
         }
         (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
-    c -> len = (uint256 - leading_zeros) > 0 ? (uint256 - leading_zeros) : 1;
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
@@ -541,7 +558,7 @@ uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
     uint64_t borrow_mask = 0x100000000;
     uint64_t aa;
     uint64_t bb;
-    uint8_t i, leading_zeros;
+    uint8_t i, leading_zeros = 0;
     uint8_t steps = MAX(a -> len, b -> len);
     for (i = 0; i < steps || (borrow != 0 && i < uint512); i++) {
         aa = (uint64_t)(a -> array[i]); 
@@ -557,7 +574,7 @@ uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
         }
         (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
-    c -> len = (uint512 - leading_zeros) > 0 ? (uint512 - leading_zeros) : 1;
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
@@ -566,7 +583,7 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
     uint64_t borrow_mask = 0x100000000;
     uint64_t aa;
     uint64_t bb;
-    uint8_t i, leading_zeros;
+    uint8_t i, leading_zeros = 0;
     uint8_t steps = MAX(a -> len, b -> len);
     for (i = 0; i < steps || (borrow != 0 && i < uint1024); i++) {
         aa = (uint64_t)(a -> array[i]); 
@@ -582,7 +599,7 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
         }
         (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
-    c -> len = (uint1024 - leading_zeros) > 0 ? (uint1024 - leading_zeros) : 1;
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
@@ -591,7 +608,7 @@ uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
     uint64_t borrow_mask = 0x100000000;
     uint64_t aa;
     uint64_t bb;
-    uint8_t i, leading_zeros;
+    uint8_t i, leading_zeros = 0;
     uint8_t steps = MAX(a -> len, b -> len);
     for (i = 0; i < steps || (borrow != 0 && i < uint2048); i++) {
         aa = (uint64_t)(a -> array[i]); 
@@ -607,7 +624,7 @@ uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
         }
         (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
-    c -> len = (uint2048 - leading_zeros) > 0 ? (uint2048 - leading_zeros) : 1;
+    c -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
@@ -638,61 +655,66 @@ uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
 
 uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
     uint64_t carry = 0;
-    uint8_t i;
-    for (uint8_t i = 0; (i < a -> len) || (carry != 0 && i < uint128); i++) {
+    uint8_t i, leading_zeros = 0;
+    for (i = 0; (i < a -> len) || (carry != 0 && i < uint128); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
-    (n > 0) ? (b -> len = i): (b -> len = 1);
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
     uint64_t carry = 0;
-    uint8_t i;
-    for (uint8_t i = 0; (i < a -> len) || (carry != 0 && i < uint256); i++) {
+    uint8_t i, leading_zeros = 0;
+    for (i = 0; (i < a -> len) || (carry != 0 && i < uint256); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
-    (n > 0) ? (b -> len = i): (b -> len = 1);
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
     uint64_t carry = 0;
-    uint8_t i;
+    uint8_t i, leading_zeros = 0;
     for (i = 0; (i < a -> len) || (carry != 0 && i < uint512); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
-    (n > 0) ? (b -> len = i): (b -> len = 1);
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b) {
     uint64_t carry = 0;
-    uint8_t i;
+    uint8_t i, leading_zeros = 0;
     for (i = 0; (i < a -> len) || (carry != 0 && i < uint1024); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
-    (n > 0) ? (b -> len = i): (b -> len = 1);
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
     uint64_t carry = 0;
-    uint8_t i;
+    uint8_t i, leading_zeros = 0;
     for (i = 0; (i < a -> len) || (carry != 0 && i < uint2048); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
-    (n > 0) ? (b -> len = i): (b -> len = 1);
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 

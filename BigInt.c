@@ -488,15 +488,16 @@ int BigInt_Compare(void* a, void* b, BigIntType type) {
 
 uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 0x1ffffffff;
-    borrow_mask <<= 32;
-    uint64_t aa = 0;
-    uint64_t bb = 0;
-    for (uint8_t i = 0; i < uint128; i++) {
-        aa = (uint64_t)(a -> array[i]);
+    uint64_t borrow_mask = 0x100000000;
+    uint64_t aa;
+    uint64_t bb;
+    uint8_t i, leading_zeros;
+    uint8_t steps = MAX(a -> len, b -> len);
+    for (i = 0; i < steps || (borrow != 0 && i < uint128); i++) {
+        aa = (uint64_t)(a -> array[i]); 
         bb = (uint64_t)(b -> array[i]);
         
-        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0;  
+        (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
 
         if (aa >= bb) {
             c -> array[i] = (uint32_t)(aa - bb);
@@ -504,18 +505,21 @@ uint32_t BigInt128_subtract(uint128_t* a, uint128_t* b, uint128_t* c) {
             c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
             borrow += 1;
         }
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
+    c -> len = (uint128 - leading_zeros) > 0 ? (uint128 - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
 uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 0x1ffffffff;
-    borrow_mask <<= 32;
-    uint64_t aa = 0;
-    uint64_t bb = 0;
-    for (uint8_t i = 0; i < uint256; i++) {
-        aa = (uint64_t)(a -> array[i]);
+    uint64_t borrow_mask = 0x100000000;
+    uint64_t aa;
+    uint64_t bb;
+    uint8_t i, leading_zeros;
+    uint8_t steps = MAX(a -> len, b -> len);
+    for (i = 0; i < steps || (borrow != 0 && i < uint256); i++) {
+        aa = (uint64_t)(a -> array[i]); 
         bb = (uint64_t)(b -> array[i]);
         
         (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
@@ -526,18 +530,21 @@ uint32_t BigInt256_subtract(uint256_t* a, uint256_t* b, uint256_t* c) {
             c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
             borrow += 1;
         }
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
+    c -> len = (uint256 - leading_zeros) > 0 ? (uint256 - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
 uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 0x1ffffffff;
-    borrow_mask <<= 32;
-    uint64_t aa = 0;
-    uint64_t bb = 0;
-    for (uint8_t i = 0; i < uint512; i++) {
-        aa = (uint64_t)(a -> array[i]);
+    uint64_t borrow_mask = 0x100000000;
+    uint64_t aa;
+    uint64_t bb;
+    uint8_t i, leading_zeros;
+    uint8_t steps = MAX(a -> len, b -> len);
+    for (i = 0; i < steps || (borrow != 0 && i < uint512); i++) {
+        aa = (uint64_t)(a -> array[i]); 
         bb = (uint64_t)(b -> array[i]);
         
         (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
@@ -548,18 +555,21 @@ uint32_t BigInt512_subtract(uint512_t* a, uint512_t* b, uint512_t* c) {
             c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
             borrow += 1;
         }
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
+    c -> len = (uint512 - leading_zeros) > 0 ? (uint512 - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
 uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 0x1ffffffff;
-    borrow_mask <<= 32;
-    uint64_t aa = 0;
-    uint64_t bb = 0;
-    for (uint8_t i = 0; i < uint1024; i++) {
-        aa = (uint64_t)(a -> array[i]);
+    uint64_t borrow_mask = 0x100000000;
+    uint64_t aa;
+    uint64_t bb;
+    uint8_t i, leading_zeros;
+    uint8_t steps = MAX(a -> len, b -> len);
+    for (i = 0; i < steps || (borrow != 0 && i < uint1024); i++) {
+        aa = (uint64_t)(a -> array[i]); 
         bb = (uint64_t)(b -> array[i]);
         
         (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
@@ -570,18 +580,21 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
             c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
             borrow += 1;
         }
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
+    c -> len = (uint1024 - leading_zeros) > 0 ? (uint1024 - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 
 uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
     uint64_t borrow = 0;
-    uint64_t borrow_mask = 0x1ffffffff;
-    borrow_mask <<= 32;
-    uint64_t aa = 0;
-    uint64_t bb = 0;
-    for (uint8_t i = 0; i < uint2048; i++) {
-        aa = (uint64_t)(a -> array[i]);
+    uint64_t borrow_mask = 0x100000000;
+    uint64_t aa;
+    uint64_t bb;
+    uint8_t i, leading_zeros;
+    uint8_t steps = MAX(a -> len, b -> len);
+    for (i = 0; i < steps || (borrow != 0 && i < uint2048); i++) {
+        aa = (uint64_t)(a -> array[i]); 
         bb = (uint64_t)(b -> array[i]);
         
         (borrow == 1) ? ((aa > 0) ? (aa -= 1, borrow -= 1) : (aa = 0xffffffff)): 0; 
@@ -592,7 +605,9 @@ uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
             c -> array[i] = (uint32_t)((aa | borrow_mask) - bb);
             borrow += 1;
         }
+        (c -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
     }
+    c -> len = (uint2048 - leading_zeros) > 0 ? (uint2048 - leading_zeros) : 1;
     return (uint32_t)borrow;
 }
 

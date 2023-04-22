@@ -17,6 +17,11 @@ static uint8_t byte_hex_mask[] = {
     0xa, 0xb, 0xc, 0xd, 0xe, 0xf
 };
 
+static uint64_t pow10[10] = {
+    1, 10, 100, 1000, 10000, 
+    100000, 1000000, 10000000, 100000000, 1000000000
+};
+
 static uint8_t update_byte(uint8_t byte, uint8_t bit, uint64_t index) {
     switch (bit) {
         case 0:

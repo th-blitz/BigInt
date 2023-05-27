@@ -74,4 +74,6 @@ BigInt BigIntModule();
 
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
+uint32_t BigInt128_left_shift(uint128_t* a, uint32_t shift, uint128_t* b);
+
 #endif

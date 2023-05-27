@@ -8,6 +8,7 @@
 #include "tests.h"
 #include "utils.h"
 #include "bigint_parser.h"
+#include "unittest.h"
 
 
 int main() {
@@ -21,12 +22,14 @@ int main() {
     // bigint.subtract(&b, &a, &a, a.type);
     // bigint.print(&a, a.type);
 
-    uint128_t a = bigint.u128_from_string("3927483274392874329287490283", strlen("3927483274392874329287490283"));
-    uint128_t b = bigint.u128_from_string("08900973027140187379828930371804", strlen("08900973027140187379828930371804"));
+    uint128_t a = bigint.u128_from_string("0b1", 3);
 
-    printlnint(a.len);
-    printlnint(b.len);
+    unittest tester = malloc_UnitTest_Module(1);
 
+    tester.index(&tester, "start: ");
+    BigInt128_left_shift(&a, 31, &a);
+    tester.index(&tester, "end: ");
+    bigint.print(&a, a.type);
     return 0;
 
 }

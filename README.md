@@ -4,7 +4,7 @@
 - Available uint types are ``` uint128_t ```, ``` uint256_t ```, ``` uint512_t ```, ``` uint1024_t ``` and ``` uint2048_t ```.
 - All uint types are stored on *``` stack memory ```* by default for the *``` best performance ```*. 
 
-# Examples
+# Examples ( 4/4 factorial examples from 300! to 100,000! )
 
 ### 1. Calculate 300 factorial using uint2048.
 ```c

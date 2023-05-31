@@ -88,7 +88,7 @@ void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c);
 void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c);
 void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type);
 
-void print_bigint(void* a, BigIntType type);
+void print_bigint(void* a, bool truncate_zeros, BigIntType type);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
 
@@ -715,7 +715,7 @@ uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b
 uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
     uint64_t carry = 0;
     uint8_t i, leading_zeros = 0;
-    for (i = 0; (i < a -> len) || (carry != 0 && i < uint2048); i++) {
+    for (i = 0; (i < a -> len) || (carry > 0 && i < uint2048); i++) {
         carry = ((uint64_t)(a -> array[i]) * n) + carry;
         b -> array[i] = (uint32_t)carry;
         (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
@@ -751,52 +751,62 @@ uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type) {
 }
 
 uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
-    
-    for (uint8_t i = 0; (i < uint128) && (carry > 0); i++) {
+    uint8_t i, leading_zeros = 0;
+    for (i = 0; (i < a -> len) || (carry > 0 && i < uint128); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1) : (leading_zeros = 0); 
         carry >>= 32;
     }
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
-    
-    for (uint8_t i = 0; (i < uint256) && (carry > 0); i++) {
+    uint8_t i, leading_zeros = 0; 
+    for (i = 0; (i < a -> len) || ((i < uint256) && (carry > 0)); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
         carry >>= 32;
     }
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
-    
-    for (uint8_t i = 0; (i < uint512) && (carry > 0); i++) {
+    uint8_t i, leading_zeros = 0; 
+    for (i = 0; (i < a -> len) || ((carry > 0) && (i < uint512)); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
         carry >>= 32;
     }
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
-    
-    for (uint8_t i = 0; (i < uint1024) && (carry > 0); i++) {
+    uint8_t i, leading_zeros = 0;
+    for (i = 0; (i < a -> len) || ((carry > 0) && (i < uint1024)); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
         carry >>= 32;
     }
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
 uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b) {
-    
-    for (uint8_t i = 0; (i < uint2048) && (carry > 0); i++) {
+    uint8_t i, leading_zeros = 0;
+    for (i = 0; (i < a -> len) || ((carry > 0) && (i < uint2048)); i++) {
         carry += (uint64_t)(a -> array[i]);
         b -> array[i] = (uint32_t)carry;
+        (b -> array[i] == 0) ? (leading_zeros += 1): (leading_zeros = 0);
         carry >>= 32;
     }
+    b -> len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return (uint32_t)carry;
 }
 
@@ -967,57 +977,57 @@ uint32_t BigInt128_left_shift(uint128_t* a, uint32_t shift, uint128_t* b) {
     return carry;
 }
 
-void print_bigint(void* a, BigIntType type) {
-    bool leading_zeros_flag = true;
+void print_bigint(void* a, bool truncate_zeros, BigIntType type) {
+    uint8_t i;
     switch (type) {
         case uint128:
-            for (uint8_t i = type; i > 0; i--) {
-                if ((leading_zeros_flag == true) && ((((uint128_t*)a) -> array[i - 1]) != 0)) {
-                    leading_zeros_flag = false;
-                } 
-                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
-                    printf("%08x", ((uint128_t*)a) -> array[i - 1]);
+            if (truncate_zeros == false) {
+                for (i = uint128; i > ((uint128_t*)a) -> len; i--) {
+                    printf("%08x", 0);
                 }
+            }
+            for (i = (((uint128_t*)a) -> len); i > 0; i--) {
+                printf("%08x", ((uint128_t*)a) -> array[i - 1]);
             }
             break;
         case uint256:
-            for (uint8_t i = type; i > 0; i--) {
-                if ((leading_zeros_flag == true) && ((((uint256_t*)a) -> array[i - 1]) != 0)) {
-                    leading_zeros_flag = false;
-                } 
-                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
-                    printf("%08x", ((uint256_t*)a) -> array[i - 1]);
+            if (truncate_zeros == false) {
+                for (i = uint256; i > ((uint256_t*)a) -> len; i--) {
+                    printf("%08x", 0);
                 }
+            }
+            for (i = (((uint256_t*)a) -> len); i > 0; i--) {
+                printf("%08x", ((uint256_t*)a) -> array[i - 1]);
             }
             break;
         case uint512:
-            for (uint8_t i = type; i > 0; i--) {
-                if ((leading_zeros_flag == true) && ((((uint512_t*)a) -> array[i - 1]) != 0)) {
-                    leading_zeros_flag = false;
-                } 
-                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
-                    printf("%08x", ((uint512_t*)a) -> array[i - 1]);
+            if (truncate_zeros == false) {
+                for (i = uint512; i > ((uint512_t*)a) -> len; i--) {
+                    printf("%08x", 0);
                 }
+            }
+            for (i = (((uint512_t*)a) -> len); i > 0; i--) {
+                printf("%08x", ((uint512_t*)a) -> array[i - 1]);
             }
             break;
         case uint1024:
-            for (uint8_t i = type; i > 0; i--) {
-                if ((leading_zeros_flag == true) && ((((uint1024_t*)a) -> array[i - 1]) != 0)) {
-                    leading_zeros_flag = false;
-                } 
-                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
-                    printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
+            if (truncate_zeros == false) {
+                for (i = uint1024; i > ((uint1024_t*)a) -> len; i--) {
+                    printf("%08x", 0);
                 }
+            }
+            for (i = (((uint1024_t*)a) -> len); i > 0; i--) {
+                printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
             }
             break;
         case uint2048:
-            for (uint8_t i = type; i > 0; i--) {
-                if ((leading_zeros_flag == true) && ((((uint2048_t*)a) -> array[i - 1]) != 0)) {
-                    leading_zeros_flag = false;
-                } 
-                if ((i - 1 == 0) || (leading_zeros_flag == false)) {
-                    printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
+            if (truncate_zeros == false) {
+                for (i = uint2048; i > ((uint2048_t*)a) -> len; i--) {
+                    printf("%08x", 0);
                 }
+            }
+            for (i = (((uint2048_t*)a) -> len); i > 0; i--) {
+                printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
             }
             break;
         default:

@@ -14,22 +14,40 @@
 int main() {
 
     BigInt bigint = BigIntModule();
-
-    // char* max = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-    // uint2048_t a = bigint.u2048_from_string(max, strlen(max));
-    // uint2048_t b = bigint.u2048_from_string(max, strlen(max));
     
-    // bigint.subtract(&b, &a, &a, a.type);
-    // bigint.print(&a, a.type);
+    // An uint2048 array of length 5.
+    uint2048_t a_large_num[5]; // a (5 * 2048 = 10,240) bit integer represented as 5 2048 bit int digits.
+    
+    a_large_num[4] = bigint.u2048_from_string("01", 2); // Initialize the least significant digit as 1.
+    for (int i = 3; i > -1; i--) {
+        a_large_num[i] = bigint.u2048(); // Initialize the rest of the digits as zeros.
+    }
 
-    uint128_t a = bigint.u128_from_string("0b1", 3);
+    unsigned int N = 1000;
+    unsigned int carry_a = 0;
+    unsigned int carry_b = 0;
 
-    unittest tester = malloc_UnitTest_Module(1);
+    while (N > 1) {
+        //                                                                                                       1223 (carry) 
+        // Below is same as arithmetic multiplication using carrys for a 5 digit number as 12345 x 6 = 74070 i.e 12345 (uint2048 [5]) x 6 (N)
+        //                                                                                                       74070 (Result as in uint2048 [5])
+        for (int i = 4; i > -1; i--) {
+            carry_b = bigint.multiply_by_n(&a_large_num[i], N, &a_large_num[i], uint2048);
+            bigint.add_by_n(&a_large_num[i], carry_a, &a_large_num[i], uint2048);
+            carry_a = carry_b;
+        }
+        if (carry_a > 0) {
+            printf("overflow \n");
+        }
+        N -= 1;
+    }
+    
+    // Printing in reverse from the Most significant digit to Least significant digit.
+    bigint.print(&a_large_num[0], true, uint2048);
+    for (int i = 1; i < 5; i++) { 
+        bigint.print(&a_large_num[i], false, uint2048); 
+    }
 
-    tester.index(&tester, "start: ");
-    BigInt128_left_shift(&a, 31, &a);
-    tester.index(&tester, "end: ");
-    bigint.print(&a, a.type);
     return 0;
 
 }

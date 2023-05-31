@@ -56,7 +56,7 @@ uint32_t BigInt_Addition(void* a, void* b, void* c, BigIntType type);
 
 int BigInt128_cmp(uint128_t* a, uint128_t* b);
 int BigInt256_cmp(uint256_t* a, uint256_t* b);
-int BigInt512_cmp(uint256_t* a, uint256_t* b);
+int BigInt512_cmp(uint512_t* a, uint512_t* b);
 int BigInt1024_cmp(uint1024_t* a, uint1024_t* b);
 int BigInt2048_cmp(uint2048_t* a, uint2048_t* b);
 int BigInt_Compare(void* a, void* b, BigIntType type);
@@ -427,7 +427,7 @@ int BigInt128_cmp(uint128_t* a, uint128_t* b) {
         return -1;
     } 
 
-    for (uint32_t i = uint128; i > 0; i--) {
+    for (uint8_t i = a -> len; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
         } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
@@ -439,7 +439,13 @@ int BigInt128_cmp(uint128_t* a, uint128_t* b) {
 
 int BigInt256_cmp(uint256_t* a, uint256_t* b) {
 
-    for (uint32_t i = uint256; i > 0; i--) {
+    if (a -> len > b -> len) {
+        return 1;
+    } else if (a -> len < b -> len) {
+        return -1;
+    } 
+
+    for (uint8_t i = a -> len; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
         } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
@@ -449,9 +455,15 @@ int BigInt256_cmp(uint256_t* a, uint256_t* b) {
     return 0;
 }
 
-int BigInt512_cmp(uint256_t* a, uint256_t* b) {
+int BigInt512_cmp(uint512_t* a, uint512_t* b) {
 
-    for (uint32_t i = uint512; i > 0; i--) {
+    if (a -> len > b -> len) {
+        return 1;
+    } else if (a -> len < b -> len) {
+        return -1;
+    } 
+    
+    for (uint8_t i = a -> len; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
         } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
@@ -463,7 +475,13 @@ int BigInt512_cmp(uint256_t* a, uint256_t* b) {
 
 int BigInt1024_cmp(uint1024_t* a, uint1024_t* b) {
 
-    for (uint32_t i = uint1024; i > 0; i--) {
+    if (a -> len > b -> len) {
+        return 1;
+    } else if (a -> len < b -> len) {
+        return -1;
+    } 
+
+    for (uint8_t i = a -> len; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
         } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
@@ -475,7 +493,13 @@ int BigInt1024_cmp(uint1024_t* a, uint1024_t* b) {
 
 int BigInt2048_cmp(uint2048_t* a, uint2048_t* b) {
 
-    for (uint32_t i = uint2048; i > 0; i--) {
+    if (a -> len > b -> len) {
+        return 1;
+    } else if (a -> len < b -> len) {
+        return -1;
+    } 
+
+    for (uint8_t i = a -> len; i > 0; i--) {
         if ((a -> array[i - 1]) > (b -> array[i - 1])) {
             return 1;
         } else if ((a -> array[i - 1]) < (b -> array[i - 1])) {
@@ -841,9 +865,10 @@ void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
     uint64_t carries[uint256] = {0};
     uint64_t aa;
     uint64_t bb;
+    uint8_t k, leading_zeros = 0;
 
-    for (uint32_t i = 0; i < uint128; i++) {
-        for (uint32_t j = 0; j < uint128; j++) {
+    for (uint32_t i = 0; i < a -> len; i++) {
+        for (uint32_t j = 0; j < b -> len; j++) {
             aa = (uint64_t)(a -> array[i]);
             bb = (uint64_t)(b -> array[j]);
             carry = carries[i + j];
@@ -853,9 +878,11 @@ void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c) {
         }
     }
 
-    for (uint8_t i = 0; i < uint256; i++) {
-        c -> array[i] = (uint32_t)carries[i];
+    for (k = 0; k < (a -> len) + (b -> len); k++) {
+        c -> array[k] = (uint32_t)carries[k];
+        (c -> array[k] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
     }
+    c -> len = (k - leading_zeros) > 0 ? (k - leading_zeros) : 1;
 }
 
 void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c) {
@@ -864,6 +891,7 @@ void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c) {
     uint64_t carries[uint512] = {0};
     uint64_t aa;
     uint64_t bb;
+    uint8_t k, leading_zeros = 0;
 
     for (uint32_t i = 0; i < uint256; i++) {
         for (uint32_t j = 0; j < uint256; j++) {
@@ -876,9 +904,11 @@ void BigInt256_mulitplication(uint256_t* a, uint256_t* b, uint512_t* c) {
         }
     }
 
-    for (uint8_t i = 0; i < uint512; i++) {
-        c -> array[i] = (uint32_t)carries[i];
+    for (k = 0; k < (a -> len) + (b -> len); k++) {
+        c -> array[k] = (uint32_t)carries[k];
+        (c -> array[k] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
     }
+    c -> len = (k - leading_zeros) > 0 ? (k - leading_zeros) : 1;
 }
 
 void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c) {
@@ -887,6 +917,7 @@ void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c) {
     uint64_t carries[uint1024] = {0};
     uint64_t aa;
     uint64_t bb;
+    uint8_t k, leading_zeros = 0;
 
     for (uint32_t i = 0; i < uint512; i++) {
         for (uint32_t j = 0; j < uint512; j++) {
@@ -899,9 +930,11 @@ void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c) {
         }
     }
 
-    for (uint8_t i = 0; i < uint1024; i++) {
-        c -> array[i] = (uint32_t)carries[i];
+    for (k = 0; k < (a -> len) + (b -> len); k++) {
+        c -> array[k] = (uint32_t)carries[k];
+        (c -> array[k] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
     }
+    c -> len = (k - leading_zeros) > 0 ? (k - leading_zeros) : 1; 
 }
 
 void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c) {
@@ -910,6 +943,7 @@ void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c) {
     uint64_t carries[uint2048] = {0};
     uint64_t aa;
     uint64_t bb;
+    uint8_t k, leading_zeros = 0;
 
     for (uint32_t i = 0; i < uint1024; i++) {
         for (uint32_t j = 0; j < uint1024; j++) {
@@ -922,9 +956,11 @@ void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c) {
         }
     }
 
-    for (uint8_t i = 0; i < uint2048; i++) {
-        c -> array[i] = (uint32_t)carries[i];
+    for (k = 0; k < (a -> len) + (b -> len); k++) {
+        c -> array[k] = (uint32_t)carries[k];
+        (c -> array[k] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
     }
+    c -> len = (k - leading_zeros) > 0 ? (k - leading_zeros) : 1;
 }
 
 void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type) {

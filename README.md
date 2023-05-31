@@ -23,8 +23,9 @@ int main() {
         bigint.multiply_by_n(&a, N, &a, a.type); // bigint.multiply_by_n() method to multiply bigint types with unsigned 32 bit integers.
         N -= 1;
     }
-
-    bigint.print(&a, a.type); // prints the result in hexadecimal (base10 print format yet to be implemented).
+    
+    // bigint.print( &bigint_num, truncate_leading_zeros, bigint_num_type);
+    bigint.print(&a, true, a.type); // prints the result in hexadecimal (base10 print format yet to be implemented).
 
     return 0;
 }
@@ -59,8 +60,9 @@ int main() {
         }
         N -= 1;
     }
-    bigint.print(&b, b.type); // b is MSB and a is LSB.
-    bigint.print(&a, a.type);
+    // bigint.print(&num, truncate_leading_zeros, num.type)
+    bigint.print(&b, true, b.type); // b is MSB and a is LSB. Truncate leading zeros.
+    bigint.print(&a, false, a.type); // do not truncate leading zeros.
 
     return 0;
 }
@@ -110,10 +112,10 @@ int main() {
     }
     
     // Printing in reverse from the Most significant digit to Least significant digit.
-    for (int i = 0; i < 5; i++) { 
-        bigint.print(&a_large_num[i], uint2048); 
+    bigint.print(&a_large_num[0], true, uint2048); //bigint.print( big integer, truncate leading zeros, big integer type )
+    for (int i = 1; i < 5; i++) { 
+        bigint.print(&a_large_num[i], false, uint2048); 
     }
-
     return 0;
 }
 ```

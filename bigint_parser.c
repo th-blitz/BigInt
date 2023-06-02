@@ -7,6 +7,7 @@
 
 #include "ByteQueue.h"
 #include "utils.h"
+#include "bigint_parser.h"
 
 
 static uint8_t byte_mask[8] = {
@@ -296,4 +297,53 @@ ByteQueue one_time_string_to_bytequeue(char* string, uint64_t string_len) {
     }
 
     return queue;
+}
+
+bool bigint_string_check(char* string, uint64_t string_len) {
+
+    bool check = false;
+
+    if (string_len <= 0) { 
+        return true;
+    }
+    uint64_t MAX = 0xffffffffffffffff - 1;
+    if (string_len > MAX) {
+        println("string len is greater than max.");
+        return false;
+    }
+
+    if (string_len == 1) {
+        check = base10_string_check(string, string_len);
+        if (check == false) {
+            base10_string_error_check(string, string_len);
+        }
+    } else if (string[0] == '0' && string[1] == 'x') {
+        check = hex_string_check(string, string_len);
+        if (check == false) {
+            hex_string_error_check(string, string_len);
+        }
+    } else if (string[0] == '0' && string[1] == 'b') {
+        check = binary_string_check(string, string_len);
+        if (check == false) {
+            binary_string_error_check(string, string_len);
+        }
+    } else {
+        check = base10_string_check(string, string_len);
+        if (check == false) {
+            base10_string_error_check(string, string_len);
+        }
+    }
+    return check;
+} 
+
+StringType bigint_string_type_check(char* string, uint64_t string_len) {
+    
+    if (string_len == 1) {
+        return decimal;
+    } else if (string[0] == '0' && string[1] == 'x') {
+        return hexadecimal;
+    } else if (string[0] == '0' && string[1] == 'b') {
+        return binary;
+    } 
+    return decimal;
 }

@@ -88,7 +88,7 @@ void BigInt512_mulitplication(uint512_t* a, uint512_t* b, uint1024_t* c);
 void BigInt1024_mulitplication(uint1024_t* a, uint1024_t* b, uint2048_t* c);
 void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type);
 
-void print_bigint(void* a, bool truncate_zeros, BigIntType type);
+void print_bigint(void* a, BigIntType type, bool truncate_zeros);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
 
@@ -176,11 +176,41 @@ uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
     return integer;
 }
 
+uint32_t get_num_from_char(char character) {
+    if (character >= '0' && character <= '9') {
+        return character - '0';
+    } else if (character >= 'a' && character <= 'z') {
+        return character - 'a' + 0xa;
+    } else if (character >= 'A' && character <= 'Z') {
+        return character - 'A' + 0xa;
+    }
+    return 0;
+}
+
 uint128_t BigInt128_from_string(char* string, uint64_t string_len) {
-    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
-    uint128_t integer = BigInt128_from_bytequeue(&queue);
-    queue.free(&queue);
-    return integer;
+    // ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    // uint128_t integer = BigInt128_from_bytequeue(&queue);
+    // queue.free(&queue);
+    // return integer;
+
+    uint128_t num = BigInt128();
+    if (bigint_string_check(string, string_len) == true) {
+        uint64_t i = 0;
+        StringType string_type = bigint_string_type_check(string, string_len);
+        if (string_type != decimal) {
+            i = 2;
+        }
+        while (string[i] == 0 && i < string_len - 1) {
+            i += 1;
+        }
+        while (i < string_len - 1) {
+            BigInt128_add_by_N(&num, get_num_from_char(string[i]), &num);
+            BigInt128_multiplication_by_N(&num, string_type, &num);
+            i += 1;
+        }
+        BigInt128_add_by_N(&num, get_num_from_char(string[i]), &num);
+    }
+    return num;
 }
 
 uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
@@ -211,10 +241,30 @@ uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
 }
 
 uint256_t BigInt256_from_string(char* string, uint64_t string_len) {
-    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
-    uint256_t integer = BigInt256_from_bytequeue(&queue);
-    queue.free(&queue);
-    return integer;
+    // ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    // uint256_t integer = BigInt256_from_bytequeue(&queue);
+    // queue.free(&queue);
+    // return integer;
+
+    uint256_t num = BigInt256();
+    if (bigint_string_check(string, string_len) == true) {
+        uint64_t i = 0;
+        StringType string_type = bigint_string_type_check(string, string_len);
+        if (string_type != decimal) {
+            i = 2;
+        }
+        while (string[i] == 0 && i < string_len - 1) {
+            i += 1;
+        }
+        while (i < string_len - 1) {
+            BigInt256_add_by_N(&num, get_num_from_char(string[i]), &num);
+            BigInt256_multiplication_by_N(&num, string_type, &num);
+            i += 1;
+        }
+        BigInt256_add_by_N(&num, get_num_from_char(string[i]), &num);
+    }
+    return num;
+
 }
 
 uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
@@ -245,12 +295,31 @@ uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
 }
 
 uint512_t BigInt512_from_string(char* string, uint64_t string_len) {
-    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
-    uint512_t integer = BigInt512_from_bytequeue(&queue);
-    queue.free(&queue);
-    return integer;
-}
+    // ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    // uint512_t integer = BigInt512_from_bytequeue(&queue);
+    // queue.free(&queue);
+    // return integer;
 
+    uint512_t num = BigInt512();
+    if (bigint_string_check(string, string_len) == true) {
+        uint64_t i = 0;
+        StringType string_type = bigint_string_type_check(string, string_len);
+        if (string_type != decimal) {
+            i = 2;
+        }
+        while (string[i] == 0 && i < string_len - 1) {
+            i += 1;
+        }
+        while (i < string_len - 1) {
+            BigInt512_add_by_N(&num, get_num_from_char(string[i]), &num);
+            BigInt512_multiplication_by_N(&num, string_type, &num);
+            i += 1;
+        }
+        BigInt512_add_by_N(&num, get_num_from_char(string[i]), &num);
+    }
+    return num;
+
+}
 
 uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
     uint1024_t integer = BigInt1024();
@@ -280,10 +349,29 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
 }
 
 uint1024_t BigInt1024_from_string(char* string, uint64_t string_len) {
-    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
-    uint1024_t integer = BigInt1024_from_bytequeue(&queue);
-    queue.free(&queue);
-    return integer;
+    // ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    // uint1024_t integer = BigInt1024_from_bytequeue(&queue);
+    // queue.free(&queue);
+    // return integer;
+
+    uint1024_t num = BigInt1024();
+    if (bigint_string_check(string, string_len) == true) {
+        uint64_t i = 0;
+        StringType string_type = bigint_string_type_check(string, string_len);
+        if (string_type != decimal) {
+            i = 2;
+        }
+        while (string[i] == 0 && i < string_len - 1) {
+            i += 1;
+        }
+        while (i < string_len - 1) {
+            BigInt1024_add_by_N(&num, get_num_from_char(string[i]), &num);
+            BigInt1024_multiplication_by_N(&num, string_type, &num);
+            i += 1;
+        }
+        BigInt1024_add_by_N(&num, get_num_from_char(string[i]), &num);
+    }
+    return num;
 }
 
 
@@ -315,10 +403,29 @@ uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
 }
 
 uint2048_t BigInt2048_from_string(char* string, uint64_t string_len) {
-    ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
-    uint2048_t integer = BigInt2048_from_bytequeue(&queue);
-    queue.free(&queue);
-    return integer;
+    // ByteQueue queue = one_time_string_to_bytequeue(string, string_len);
+    // uint2048_t integer = BigInt2048_from_bytequeue(&queue);
+    // queue.free(&queue);
+    // return integer;
+
+    uint2048_t num = BigInt2048();
+    if (bigint_string_check(string, string_len) == true) {
+        uint64_t i = 0;
+        StringType string_type = bigint_string_type_check(string, string_len);
+        if (string_type != decimal) {
+            i = 2;
+        }
+        while (string[i] == 0 && i < string_len - 1) {
+            i += 1;
+        }
+        while (i < string_len - 1) {
+            BigInt2048_add_by_N(&num, get_num_from_char(string[i]), &num);
+            BigInt2048_multiplication_by_N(&num, string_type, &num);
+            i += 1;
+        }
+        BigInt2048_add_by_N(&num, get_num_from_char(string[i]), &num);
+    }
+    return num;
 }
 
 uint32_t BigInt128_add(uint128_t* a, uint128_t* b, uint128_t* c) {
@@ -983,37 +1090,9 @@ void BigInt_Multiplication(void* a, void* b, void* c, BigIntType type) {
     }
 }
 
-uint32_t BigInt128_left_shift(uint128_t* a, uint32_t shift, uint128_t* b) {
 
-    uint8_t shift_32s = shift / 32;
-    uint8_t shifts_in_32s = shift % 32;
-    uint8_t i, j, leading_zeros = 0, k = 0;
-    uint64_t carry = 0;
 
-    for (i = a -> len + shift_32s, j = a -> len; j > 0; i--, j--) {
-        (i - 1 <= uint128) ? (b -> array[i - 1] = a -> array[j - 1]) : 0;
-    }
-
-    printlnint(i);
-
-    for (k = i; (k < (a -> len + shift_32s)) && (k < uint128); k++) {
-        carry = ((uint64_t)(b -> array[i]) << shifts_in_32s) | carry;
-        b -> array[i] = (uint32_t)carry;
-        (b -> array[i] == 0) ? (leading_zeros += 1) : (leading_zeros = 0);
-        carry >>= 32;
-    }
-
-    b -> len = (k - leading_zeros) > 0 ? (k - leading_zeros) : 1;
-
-    while(i > 0) {
-        b -> array[i - 1] = 0;
-        i--;
-    }
-    
-    return carry;
-}
-
-void print_bigint(void* a, bool truncate_zeros, BigIntType type) {
+void print_bigint(void* a, BigIntType type, bool truncate_zeros) {
     uint8_t i;
     switch (type) {
         case uint128:
@@ -1070,7 +1149,6 @@ void print_bigint(void* a, bool truncate_zeros, BigIntType type) {
             printf("err: at BigInt.c/print_bigint(): none type received\n");
             break;
     }
-    printf("\n");
 }
 
 void BigInt_to_string(void* a, BigIntType type, char* string) {

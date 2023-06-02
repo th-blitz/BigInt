@@ -66,7 +66,7 @@ typedef struct BigInt {
     void (*multiply)(void* a, void* b, void* c, BigIntType type);
     uint32_t (*add_by_n)(void* a, uint32_t n, void* b, BigIntType type);
 
-    void (*print)(void* a, bool truncate_zeros, BigIntType type);
+    void (*print)(void* a, BigIntType type, bool truncate_zeros);
     void (*to_string)(void* a, BigIntType type, char* string);
 
 } BigInt;

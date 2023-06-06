@@ -1,6 +1,45 @@
 
+#include <stdint.h>
+
 #include "BigInt.h"
-#include "utils.c"
+#include "utils.h"
+
+
+
+uint32_t BigInt128_divide_by_n(uint128_t* a, uint64_t divisor, uint128_t* b) {
+    uint64_t remainder = 0;
+    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
+    for (i = a -> len; i > 0; i--) {
+        remainder <<= 32;
+        remainder += (uint64_t)(a -> array[i - 1]);
+        b -> array[i - 1] = (uint32_t)(remainder / divisor);
+        (b -> array[i - 1] == 0 && leading_zeros_flag == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
+        remainder %= divisor;
+    }
+    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
+    return (uint32_t)(remainder);
+}
+
+
+uint32_t BigInt_divide_by_n(void* a, uint32_t carry, void* b, BigIntType type) {
+    uint32_t remainder = 0;
+    switch(type) {
+        case uint128:
+            break;
+        case uint256:
+            break;
+        case uint512:
+            break;
+        case uint1024:
+            break;
+        case uint2048:
+            break;
+        default:
+            printlnc("err: no types identified at BigInt_divide_by_n", red);
+    } 
+    
+    return remainder;
+}
 
 
 uint32_t BigInt128_left_shift(uint128_t* a, uint32_t shift, uint128_t* b) {

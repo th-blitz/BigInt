@@ -1,5 +1,5 @@
 
-files := BigInt.o ByteQueue.o unittest.o utils.o bigint_parser.o tests.o
+files := BigInt.o BigInt_b.o ByteQueue.o unittest.o utils.o bigint_parser.o tests.o 
 
 main: $(files) main.out 
 	./main.out

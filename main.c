@@ -11,13 +11,13 @@
 #include "bigint_parser.h"
 #include "unittest.h"
 
-#include "BigInt_b.h"
+
 
 int main() {
     
     BigInt BigInt = BigIntModule();
 
-    char* string = "0b100100011110011000011111001001";
+    char* string = "0x111f001001";
     uint128_t zero = BigInt.u128();
     uint128_t num = BigInt.u128_from_string(string, strlen(string));
 
@@ -25,7 +25,7 @@ int main() {
     char string10[100];
     int i = 0;
     while (BigInt.compare(&num, &zero, num.type) == 1) {
-        remainder = BigInt128_divide_by_n(&num, 2, &num);
+        remainder = BigInt.divide_by_n(&num, 10, &num, num.type); 
         string10[i] = (uint8_t)remainder + '0';
         i += 1;
     }

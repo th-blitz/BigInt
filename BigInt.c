@@ -6,6 +6,7 @@
 
 // #include "ByteStack.h"
 #include "BigInt.h"
+#include "BigInt_b.h"
 #include "ByteQueue.h"
 #include "bigint_parser.h"
 #include "utils.h"
@@ -117,6 +118,7 @@ BigInt BigIntModule() {
     opp.subtract = BigInt_Subtract;
     opp.multiply = BigInt_Multiplication;
     opp.add_by_n = BigInt_Add_by_N;
+    opp.divide_by_n = BigInt_divide_by_n;
     
     return opp;
 }

@@ -3,7 +3,8 @@
 
 #include "BigInt.h"
 
-uint32_t BigInt128_divide_by_n(uint128_t* a, uint64_t divisor, uint128_t* b);
+uint32_t BigInt_divide_by_n(void* a, uint32_t divisor, void* b, BigIntType type);
+
 
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "stdint.h"
 #include "stdbool.h"
+
 // #include "ByteStack.h"
 
 typedef enum BigIntType {
@@ -65,6 +66,8 @@ typedef struct BigInt {
     uint32_t (*subtract)(void* a, void* b, void* c, BigIntType type);
     void (*multiply)(void* a, void* b, void* c, BigIntType type);
     uint32_t (*add_by_n)(void* a, uint32_t n, void* b, BigIntType type);
+    
+    uint32_t (*divide_by_n)(void* a, uint32_t n, void* b, BigIntType type); // in BigInt_b.c
 
     void (*print)(void* a, BigIntType type, bool truncate_zeros);
     void (*to_string)(void* a, BigIntType type, char* string);

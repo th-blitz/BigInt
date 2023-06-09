@@ -8,71 +8,61 @@
 
 uint32_t BigInt128_divide_by_n(uint128_t* a, uint64_t divisor, uint128_t* b) {
     uint64_t remainder = 0;
-    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
-    for (i = a -> len; i > 0; i--) {
+    uint8_t i;
+    for (i = uint128; i > 0; i--) {
         remainder <<= 32;
         remainder += (uint64_t)(a -> array[i - 1]);
         b -> array[i - 1] = (uint32_t)(remainder / divisor);
-        (leading_zeros_flag == 0 && b -> array[i - 1] == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
         remainder %= divisor;
     }
-    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
     return (uint32_t)remainder;
 }
 
 uint32_t BigInt256_divide_by_n(uint256_t* a, uint64_t divisor, uint256_t* b) {
     uint64_t remainder = 0;
-    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
-    for (i = a -> len; i > 0; i--) {
+    uint8_t i;
+    for (i = uint256; i > 0; i--) {
         remainder <<= 32;
         remainder += (uint64_t)(a -> array[i - 1]);
         b -> array[i - 1] = (uint32_t)(remainder / divisor);
-        (leading_zeros_flag == 0 && b -> array[i - 1] == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
         remainder %= divisor;
     }
-    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
     return (uint32_t)remainder;
 }
 
 uint32_t BigInt512_divide_by_n(uint512_t* a, uint64_t divisor, uint512_t* b) {
     uint64_t remainder = 0;
-    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
-    for (i = a -> len; i > 0; i--) {
+    uint8_t i;
+    for (i = uint512; i > 0; i--) {
         remainder <<= 32;
         remainder += (uint64_t)(a -> array[i - 1]);
         b -> array[i - 1] = (uint32_t)(remainder / divisor);
-        (leading_zeros_flag == 0 && b -> array[i - 1] == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
         remainder %= divisor;
     }
-    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
     return (uint32_t)remainder;
 }
 
 uint32_t BigInt1024_divide_by_n(uint1024_t* a, uint64_t divisor, uint1024_t* b) {
     uint64_t remainder = 0;
-    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
-    for (i = a -> len; i > 0; i--) {
+    uint8_t i;
+    for (i = uint1024; i > 0; i--) {
         remainder <<= 32;
         remainder += (uint64_t)(a -> array[i - 1]);
         b -> array[i - 1] = (uint32_t)(remainder / divisor);
-        (leading_zeros_flag == 0 && b -> array[i - 1] == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
         remainder %= divisor;
     }
-    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
     return (uint32_t)remainder;
 }
 
 uint32_t BigInt2048_divide_by_n(uint2048_t* a, uint64_t divisor, uint2048_t* b) {
     uint64_t remainder = 0;
-    uint8_t i, leading_zeros = 0, leading_zeros_flag = 0;
-    for (i = a -> len; i > 0; i--) {
+    uint8_t i;
+    for (i = uint2048; i > 0; i--) {
         remainder <<= 32;
         remainder += (uint64_t)(a -> array[i - 1]);
         b -> array[i - 1] = (uint32_t)(remainder / divisor);
-        (leading_zeros_flag == 0 && b -> array[i - 1] == 0) ? (leading_zeros += 1): (leading_zeros_flag = 1);
         remainder %= divisor;
     }
-    b -> len = ((a -> len - leading_zeros) > 0) ? (a -> len - leading_zeros) : (1);
     return (uint32_t)remainder;
 }
 

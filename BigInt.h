@@ -16,6 +16,13 @@ typedef enum BigIntType {
     uint2048 = 64
 } BigIntType;
 
+typedef enum BaseType {
+    base_2 = 2,
+    base_8 = 8,
+    base_10 = 10,
+    base_16 = 16,
+} BaseType;
+
 typedef struct uint128_tt {
     uint32_t array[uint128];
     BigIntType type;
@@ -69,7 +76,8 @@ typedef struct BigInt {
     
     uint32_t (*divide_by_n)(void* a, uint32_t n, void* b, BigIntType type); // in BigInt_b.c
 
-    void (*print)(void* a, BigIntType type, bool truncate_zeros);
+    void (*print)(void* a, BigIntType type, BaseType base_type);
+    void (*println)(void* a, BigIntType type, BaseType base_type);
     void (*to_string)(void* a, BigIntType type, char* string);
 
 } BigInt;

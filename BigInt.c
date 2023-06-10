@@ -95,6 +95,8 @@ bool BIGINT_TRUNCATE_ZEROS = true;
 // void print_bigint(void* a, BigIntType type, bool truncate_zeros);
 void BigInt_print(void* a, BigIntType type, BaseType base_type);
 void BigInt_print_line(void* a, BigIntType type, BaseType base_type);
+void BigInt_print_hex(void* a, BigIntType type, bool truncate_zeros);
+void BigInt_print_hex_line(void* a, BigIntType type, bool truncate_zeros);
 void BigInt_to_string(void* a, BigIntType type, char* string);
 
 
@@ -119,6 +121,8 @@ BigInt BigIntModule() {
 
     opp.print = BigInt_print;
     opp.println = BigInt_print_line;
+    opp.print_hex = BigInt_print_hex;
+    opp.println_hex = BigInt_print_hex_line;
     opp.to_string = BigInt_to_string;
 
     opp.multiply_by_n = BigInt_Multiply_by_N;
@@ -1034,7 +1038,7 @@ void BigInt_print(void* a, BigIntType type, BaseType base_type) {
             uint128_t zero128 = BigInt128();
             uint128_t b128 = *(uint128_t*)a;
             while (BigInt128_cmp(&b128, &zero128) != 0) {
-                byte = (uint8_t)BigInt128_divide_by_n(&b128, base_type, &b128);
+                byte = (uint8_t)BigInt128_divide_by_n(&b128, base_type, 0, &b128);
                 queue.append_right(&queue, byte);
                 i += 1;
             }
@@ -1046,7 +1050,7 @@ void BigInt_print(void* a, BigIntType type, BaseType base_type) {
             uint256_t zero256 = BigInt256();
             uint256_t b256 = *(uint256_t*)a;
             while (BigInt256_cmp(&b256, &zero256) != 0) {
-                byte = (uint8_t)BigInt256_divide_by_n(&b256, base_type, &b256);
+                byte = (uint8_t)BigInt256_divide_by_n(&b256, base_type, 0, &b256);
                 queue.append_right(&queue, byte);
                 i += 1;
             }
@@ -1058,7 +1062,7 @@ void BigInt_print(void* a, BigIntType type, BaseType base_type) {
             uint512_t zero512 = BigInt512();
             uint512_t b512 = *(uint512_t*)a;
             while (BigInt512_cmp(&b512, &zero512) != 0) {
-                byte = (uint8_t)BigInt512_divide_by_n(&b512, base_type, &b512);
+                byte = (uint8_t)BigInt512_divide_by_n(&b512, base_type, 0, &b512);
                 queue.append_right(&queue, byte);
                 i += 1;
             }
@@ -1070,7 +1074,7 @@ void BigInt_print(void* a, BigIntType type, BaseType base_type) {
             uint1024_t zero1024 = BigInt1024();
             uint1024_t b1024 = *(uint1024_t*)a;
             while (BigInt1024_cmp(&b1024, &zero1024) != 0) {
-                byte = (uint8_t)BigInt1024_divide_by_n(&b1024, base_type, &b1024);
+                byte = (uint8_t)BigInt1024_divide_by_n(&b1024, base_type, 0, &b1024);
                 queue.append_right(&queue, byte);
                 i += 1;
             }
@@ -1082,7 +1086,7 @@ void BigInt_print(void* a, BigIntType type, BaseType base_type) {
             uint2048_t zero2048 = BigInt2048();
             uint2048_t b2048 = *(uint2048_t*)a;
             while (BigInt2048_cmp(&b2048, &zero2048) != 0) {
-                byte = (uint8_t)BigInt2048_divide_by_n(&b2048, base_type, &b2048);
+                byte = (uint8_t)BigInt2048_divide_by_n(&b2048, base_type, 0, &b2048);
                 queue.append_right(&queue, byte);
                 i += 1;
             }
@@ -1103,64 +1107,85 @@ void BigInt_print_line(void* a, BigIntType type, BaseType base_type) {
     printf("\n");
 }
 
-// void print_bigint(void* a, BigIntType type, bool truncate_zeros) {
-//     uint8_t i;
-//     switch (type) {
-//         case uint128:
-//             if (truncate_zeros == false) {
-//                 for (i = uint128; i > ((uint128_t*)a) -> len; i--) {
-//                     printf("%08x", 0);
-//                 }
-//             }
-//             for (i = (((uint128_t*)a) -> len); i > 0; i--) {
-//                 printf("%08x", ((uint128_t*)a) -> array[i - 1]);
-//             }
-//             break;
-//         case uint256:
-//             if (truncate_zeros == false) {
-//                 for (i = uint256; i > ((uint256_t*)a) -> len; i--) {
-//                     printf("%08x", 0);
-//                 }
-//             }
-//             for (i = (((uint256_t*)a) -> len); i > 0; i--) {
-//                 printf("%08x", ((uint256_t*)a) -> array[i - 1]);
-//             }
-//             break;
-//         case uint512:
-//             if (truncate_zeros == false) {
-//                 for (i = uint512; i > ((uint512_t*)a) -> len; i--) {
-//                     printf("%08x", 0);
-//                 }
-//             }
-//             for (i = (((uint512_t*)a) -> len); i > 0; i--) {
-//                 printf("%08x", ((uint512_t*)a) -> array[i - 1]);
-//             }
-//             break;
-//         case uint1024:
-//             if (truncate_zeros == false) {
-//                 for (i = uint1024; i > ((uint1024_t*)a) -> len; i--) {
-//                     printf("%08x", 0);
-//                 }
-//             }
-//             for (i = (((uint1024_t*)a) -> len); i > 0; i--) {
-//                 printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
-//             }
-//             break;
-//         case uint2048:
-//             if (truncate_zeros == false) {
-//                 for (i = uint2048; i > ((uint2048_t*)a) -> len; i--) {
-//                     printf("%08x", 0);
-//                 }
-//             }
-//             for (i = (((uint2048_t*)a) -> len); i > 0; i--) {
-//                 printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
-//             }
-//             break;
-//         default:
-//             printf("err: at BigInt.c/print_bigint(): none type received\n");
-//             break;
-//     }
-// }
+
+void BigInt_print_hex(void* a, BigIntType type, bool truncate_zeros) {
+    uint8_t leading_zeros, i;
+    switch (type) {
+        case uint128:
+            i = uint128;
+            if (truncate_zeros == true) {
+                while (((uint128_t*)a) -> array[i - 1] == 0) {
+                    i -= 1;
+                }
+                printf("%x", ((uint128_t*)a) -> array[i - 1]);
+                i -= 1;
+            }
+            for ( ; i > 0; i--) {
+                printf("%08x", ((uint128_t*)a) -> array[i - 1]);
+            }
+            break;
+        case uint256:
+            i = uint256;
+            if (truncate_zeros == true) {
+                while (((uint256_t*)a) -> array[i - 1] == 0) {
+                    i -= 1;
+                }
+                printf("%x", ((uint256_t*)a) -> array[i - 1]);
+                i -= 1;
+            }
+            for ( ; i > 0; i--) {
+                printf("%08x", ((uint256_t*)a) -> array[i - 1]);
+            }
+            break;
+        case uint512:
+            i = uint512;
+            if (truncate_zeros == true) {
+                while (((uint512_t*)a) -> array[i - 1] == 0) {
+                    i -= 1;
+                }
+                printf("%x", ((uint512_t*)a) -> array[i - 1]);
+                i -= 1;
+            }
+            for ( ; i > 0; i--) {
+                printf("%08x", ((uint512_t*)a) -> array[i - 1]);
+            }
+            break;
+        case uint1024:
+            i = uint1024;
+            if (truncate_zeros == true) {
+                while (((uint1024_t*)a) -> array[i - 1] == 0) {
+                    i -= 1;
+                }
+                printf("%x", ((uint1024_t*)a) -> array[i - 1]);
+                i -= 1;
+            }
+            for ( ; i > 0; i--) {
+                printf("%08x", ((uint1024_t*)a) -> array[i - 1]);
+            }
+            break;
+        case uint2048:
+            i = uint2048;
+            if (truncate_zeros == true) {
+                while (((uint2048_t*)a) -> array[i - 1] == 0) {
+                    i -= 1;
+                }
+                printf("%x", ((uint2048_t*)a) -> array[i - 1]);
+                i -= 1;
+            }
+            for ( ; i > 0; i--) {
+                printf("%08x", ((uint2048_t*)a) -> array[i - 1]);
+            }
+            break;
+        default:
+            printf("err: at BigInt.c/print_bigint(): none type received\n");
+            break;
+    }
+}
+
+void BigInt_print_hex_line(void* a, BigIntType type, bool truncate_zeros) {
+    BigInt_print_hex(a, type, truncate_zeros);
+    printf("\n");
+}
 
 void BigInt_to_string(void* a, BigIntType type, char* string) {
     

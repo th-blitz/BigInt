@@ -78,6 +78,8 @@ typedef struct BigInt {
 
     void (*print)(void* a, BigIntType type, BaseType base_type);
     void (*println)(void* a, BigIntType type, BaseType base_type);
+    void (*print_hex)(void* a, BigIntType type, bool truncate_zeros);
+    void (*println_hex)(void* a, BigIntType type, bool truncate_zeros);
     void (*to_string)(void* a, BigIntType type, char* string);
 
 } BigInt;

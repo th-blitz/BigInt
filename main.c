@@ -15,12 +15,16 @@
 
 int main() {
     
-    BigInt BigInt = BigIntModule();
-    char* string = "0x78978327423abccc";
+    BigInt bigint = BigIntModule();
 
-    uint128_t a = BigInt.u128_from_string(string, strlen(string));
-    
-    BigInt.println(&a, a.type, base_16);
+    uint2048_t a = bigint.u2048_from_string("1", 1);
+    uint32_t n = 300;
+    while (n > 1) {
+        bigint.multiply_by_n(&a, n, &a, a.type);
+        n -= 1;
+    }
+
+    bigint.println(&a, a.type, base_10);
 
     return 0;
 

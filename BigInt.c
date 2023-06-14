@@ -69,18 +69,18 @@ uint32_t BigInt1024_subtract(uint1024_t* a, uint1024_t* b, uint1024_t* c);
 uint32_t BigInt2048_subtract(uint2048_t* a, uint2048_t* b, uint2048_t* c);
 uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type);
 
-uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b);
-uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b);
-uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b);
-uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b);
-uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b);
-uint32_t BigInt_Multiply_by_N(void* a, uint64_t N, void* b, BigIntType type);
+uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint32_t n, uint128_t* b);
+uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint32_t n, uint256_t* b);
+uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint32_t n, uint512_t* b);
+uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint32_t n, uint1024_t* b);
+uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint32_t n, uint2048_t* b);
+uint32_t BigInt_Multiply_by_N(void* a, uint32_t N, void* b, BigIntType type);
 
-uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b);
-uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b);
-uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b);
-uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b);
-uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b);
+uint32_t BigInt128_add_by_N(uint128_t* a, uint32_t carry, uint128_t* b);
+uint32_t BigInt256_add_by_N(uint256_t* a, uint32_t carry, uint256_t* b);
+uint32_t BigInt512_add_by_N(uint512_t* a, uint32_t carry, uint512_t* b);
+uint32_t BigInt1024_add_by_N(uint1024_t* a, uint32_t carry, uint1024_t* b);
+uint32_t BigInt2048_add_by_N(uint2048_t* a, uint32_t carry, uint2048_t* b);
 uint32_t BigInt_Add_by_N(void* a, uint32_t N, void* b, BigIntType type);
 
 void BigInt128_mulitplication(uint128_t* a, uint128_t* b, uint256_t* c);
@@ -117,7 +117,18 @@ BigInt BigIntModule() {
     opp.u2048_from_string = BigInt2048_from_string;
     
     opp.add = BigInt_Addition;
+    opp.u128_add = BigInt128_add;
+    opp.u256_add = BigInt256_add;
+    opp.u512_add = BigInt512_add;
+    opp.u1024_add = BigInt1024_add;
+    opp.u2048_add = BigInt2048_add;
+
     opp.compare = BigInt_Compare;
+    opp.u128_compare = BigInt128_cmp;
+    opp.u256_compare = BigInt256_cmp;
+    opp.u512_compare = BigInt512_cmp;
+    opp.u1024_compare = BigInt1024_cmp;
+    opp.u2048_compare = BigInt2048_cmp;
 
     opp.print = BigInt_print;
     opp.println = BigInt_print_line;
@@ -126,9 +137,28 @@ BigInt BigIntModule() {
     opp.to_string = BigInt_to_string;
 
     opp.multiply_by_n = BigInt_Multiply_by_N;
+    opp.u128_multiply_by_n = BigInt128_multiplication_by_N;
+    opp.u256_multiply_by_n = BigInt256_multiplication_by_N;
+    opp.u512_multiply_by_n = BigInt512_multiplication_by_N;
+    opp.u1024_multiply_by_n = BigInt1024_multiplication_by_N;
+    opp.u2048_multiply_by_n = BigInt2048_multiplication_by_N;
+
     opp.subtract = BigInt_Subtract;
+    opp.u128_subtract = BigInt128_subtract;
+    opp.u256_subtract = BigInt256_subtract;
+    opp.u512_subtract = BigInt512_subtract;
+    opp.u1024_subtract = BigInt1024_subtract;
+    opp.u2048_subtract = BigInt2048_subtract;
+    
     opp.multiply = BigInt_Multiplication;
+
     opp.add_by_n = BigInt_Add_by_N;
+    opp.u128_add_by_n = BigInt128_add_by_N;
+    opp.u256_add_by_n = BigInt256_add_by_N;
+    opp.u512_add_by_n = BigInt512_add_by_N;
+    opp.u1024_add_by_n = BigInt1024_add_by_N;
+    opp.u2048_add_by_n = BigInt2048_add_by_N;
+    
     opp.divide_by_n = BigInt_divide_by_n;
     
     return opp;
@@ -137,27 +167,27 @@ BigInt BigIntModule() {
 
 
 uint128_t BigInt128() {
-    uint128_t type = {.array = {0}, .type = uint128, .len = 1};
+    uint128_t type = {.array = {0}, .type = uint128};
     return type;
 }
 
 uint256_t BigInt256() {
-    uint256_t type = {.array = {0}, .type = uint256, .len = 1};
+    uint256_t type = {.array = {0}, .type = uint256};
     return type;
 }
 
 uint512_t BigInt512() {
-    uint512_t type = {.array = {0}, .type = uint512, .len = 1};
+    uint512_t type = {.array = {0}, .type = uint512};
     return type;
 }
 
 uint1024_t BigInt1024() {
-    uint1024_t type = {.array = {0}, .type = uint1024, .len = 1};
+    uint1024_t type = {.array = {0}, .type = uint1024};
     return type;
 }
 
 uint2048_t BigInt2048() {
-    uint2048_t type = {.array = {0}, .type = uint2048, .len = 1};
+    uint2048_t type = {.array = {0}, .type = uint2048};
     return type;
 }
 
@@ -185,7 +215,6 @@ uint128_t BigInt128_from_bytequeue(ByteQueue* queue) {
         (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -253,7 +282,6 @@ uint256_t BigInt256_from_bytequeue(ByteQueue* queue) {
         (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -310,7 +338,6 @@ uint512_t BigInt512_from_bytequeue(ByteQueue* queue) {
         (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -369,7 +396,6 @@ uint1024_t BigInt1024_from_bytequeue(ByteQueue* queue) {
         (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -428,7 +454,6 @@ uint2048_t BigInt2048_from_bytequeue(ByteQueue* queue) {
         (word == 0) ? (leading_zeros += 1): (leading_zeros = 0); 
         i += 1;
     }
-    integer.len = (i - leading_zeros) > 0 ? (i - leading_zeros) : 1;
     return integer;
 }
 
@@ -510,7 +535,6 @@ uint32_t BigInt1024_add(uint1024_t* a, uint1024_t* b, uint1024_t* c) {
 uint32_t BigInt2048_add(uint2048_t* a, uint2048_t* b, uint2048_t* c) {
     uint64_t carry = 0;
     uint8_t i;
-    uint8_t size = MAX(a -> len, b -> len);
     for (i = 0; i < uint2048; i++) {
         carry = (uint64_t)(a -> array[i]) + (uint64_t)(b -> array[i]) + carry;
         c -> array[i] = (uint32_t)carry;
@@ -766,7 +790,7 @@ uint32_t BigInt_Subtract(void* a, void* b, void* c, BigIntType type) {
     return borrow;
 }
 
-uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
+uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint32_t n, uint128_t* b) {
     uint64_t carry = 0;
     uint8_t i;
     for (i = 0; i < uint128; i++) {
@@ -777,7 +801,7 @@ uint32_t BigInt128_multiplication_by_N(uint128_t* a, uint64_t n, uint128_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
+uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint32_t n, uint256_t* b) {
     uint64_t carry = 0;
     uint8_t i;
     for (i = 0; i < uint256; i++) {
@@ -788,7 +812,7 @@ uint32_t BigInt256_multiplication_by_N(uint256_t* a, uint64_t n, uint256_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
+uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint32_t n, uint512_t* b) {
     uint64_t carry = 0;
     uint8_t i;
     for (i = 0; i < uint512; i++) {
@@ -799,7 +823,7 @@ uint32_t BigInt512_multiplication_by_N(uint512_t* a, uint64_t n, uint512_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b) {
+uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint32_t n, uint1024_t* b) {
     uint64_t carry = 0;
     uint8_t i;
     for (i = 0; i < uint1024; i++) {
@@ -810,7 +834,7 @@ uint32_t BigInt1024_multiplication_by_N(uint1024_t* a, uint64_t n, uint1024_t* b
     return (uint32_t)carry;
 }
 
-uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b) {
+uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint32_t n, uint2048_t* b) {
     uint64_t carry = 0;
     uint8_t i;
     for (i = 0; i < uint2048; i++) {
@@ -821,7 +845,7 @@ uint32_t BigInt2048_multiplication_by_N(uint2048_t* a, uint64_t n, uint2048_t* b
     return (uint32_t)carry;
 }
 
-uint32_t BigInt_Multiply_by_N(void* a, uint64_t carry, void* b, BigIntType type) {
+uint32_t BigInt_Multiply_by_N(void* a, uint32_t carry, void* b, BigIntType type) {
     switch (type) {
         case uint128:
             carry = BigInt128_multiplication_by_N( (uint128_t*)a, carry, (uint128_t*)b);
@@ -845,7 +869,8 @@ uint32_t BigInt_Multiply_by_N(void* a, uint64_t carry, void* b, BigIntType type)
     return carry;
 }
 
-uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
+uint32_t BigInt128_add_by_N(uint128_t* a, uint32_t n, uint128_t* b) {
+    uint64_t carry = n;
     uint8_t i;
     for (i = 0; i < uint128; i++) {
         carry += (uint64_t)(a -> array[i]);
@@ -855,7 +880,8 @@ uint32_t BigInt128_add_by_N(uint128_t* a, uint64_t carry, uint128_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
+uint32_t BigInt256_add_by_N(uint256_t* a, uint32_t n, uint256_t* b) {
+    uint64_t carry = n;
     uint8_t i; 
     for (i = 0; i < uint256; i++) {
         carry += (uint64_t)(a -> array[i]);
@@ -865,7 +891,8 @@ uint32_t BigInt256_add_by_N(uint256_t* a, uint64_t carry, uint256_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
+uint32_t BigInt512_add_by_N(uint512_t* a, uint32_t n, uint512_t* b) {
+    uint64_t carry = n;
     uint8_t i; 
     for (i = 0; i < uint512; i++) {
         carry += (uint64_t)(a -> array[i]);
@@ -875,7 +902,8 @@ uint32_t BigInt512_add_by_N(uint512_t* a, uint64_t carry, uint512_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
+uint32_t BigInt1024_add_by_N(uint1024_t* a, uint32_t n, uint1024_t* b) {
+    uint64_t carry = n;
     uint8_t i;
     for (i = 0; i < uint1024; i++) {
         carry += (uint64_t)(a -> array[i]);
@@ -885,7 +913,8 @@ uint32_t BigInt1024_add_by_N(uint1024_t* a, uint64_t carry, uint1024_t* b) {
     return (uint32_t)carry;
 }
 
-uint32_t BigInt2048_add_by_N(uint2048_t* a, uint64_t carry, uint2048_t* b) {
+uint32_t BigInt2048_add_by_N(uint2048_t* a, uint32_t n, uint2048_t* b) {
+    uint64_t carry = n;
     uint8_t i;
     for (i = 0; i < uint2048; i++) {
         carry += (uint64_t)(a -> array[i]);

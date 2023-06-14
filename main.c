@@ -10,22 +10,20 @@
 #include "utils.h"
 #include "bigint_parser.h"
 #include "unittest.h"
-
+#include "BigInt_c.h"
+    
 
 
 int main() {
     
     BigInt bigint = BigIntModule();
+    char* string = "101";
+    uint128_t a = bigint.u128_from_string(string, strlen(string));
 
-    uint2048_t a = bigint.u2048_from_string("1", 1);
-    uint32_t n = 300;
-    while (n > 1) {
-        bigint.multiply_by_n(&a, n, &a, a.type);
-        n -= 1;
-    }
+    BigInt128_left_shift(&a,8, &a);
 
     bigint.println(&a, a.type, base_10);
-
+    bigint.println_hex(&a, a.type, false);
     return 0;
 
 }

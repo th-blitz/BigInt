@@ -22,7 +22,12 @@ int main() {
 
     BigInt128_left_shift(&a,8, &a);
 
-    bigint.println(&a, a.type, base_10);
+    bigint.println(&a, a.type, base_2);
+    bigint.println_hex(&a, a.type, false);
+
+    BigInt128_right_shift(&a, 12, &a);
+
+    bigint.println(&a, a.type, base_2);
     bigint.println_hex(&a, a.type, false);
     return 0;
 

@@ -3,8 +3,8 @@
 #ifndef BigInt_H
 #define BigInt_H
 
-#include "stdint.h"
-#include "stdbool.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // #include "ByteStack.h"
 
@@ -50,6 +50,7 @@ typedef struct uint2048_tt {
 
 
 typedef struct BigInt {
+
     uint128_t (*u128)();
     uint256_t (*u256)();
     uint512_t (*u512)();
@@ -118,5 +119,19 @@ typedef struct BigInt {
  
 BigInt BigIntModule();
 
+uint128_t BigInt_get_u128_MAX();
+#define u128_MAX BigInt_get_u128_MAX();
+
+uint256_t BigInt_get_u256_MAX();
+#define u256_MAX BigInt_get_u256_MAX();
+
+uint512_t BigInt_get_u512_MAX();
+#define u512_MAX BigInt_get_u512_MAX();
+
+uint1024_t BigInt_get_u1024_MAX();
+#define u1024_MAX BigInt_get_u1024_MAX();
+
+uint2048_t BigInt_get_u2048_MAX();
+#define u2048_MAX BigInt_get_u2048_MAX();
 
 #endif

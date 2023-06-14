@@ -7,6 +7,7 @@
 // #include "ByteStack.h"
 #include "BigInt.h"
 #include "BigInt_b.h"
+#include "BigInt_c.h"
 #include "ByteQueue.h"
 #include "bigint_parser.h"
 #include "utils.h"
@@ -163,8 +164,6 @@ BigInt BigIntModule() {
     
     return opp;
 }
-
-
 
 uint128_t BigInt128() {
     uint128_t type = {.array = {0}, .type = uint128};

@@ -1,0 +1,90 @@
+
+
+#include <stdint.h>
+
+#include "BigInt.h"
+
+
+static uint128_t u128_MAX_VAL = {
+    .array = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
+    },
+    .type = uint128
+};
+
+static uint256_t u256_MAX_VAL = {
+    .array = {
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
+    },
+    .type = uint256
+};
+
+static uint512_t u512_MAX_VAL = {
+    .array = {
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
+    },
+    .type = uint512
+};
+    
+static uint1024_t u1024_MAX_VAL = {
+    .array = {
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
+    },
+    .type = uint1024
+};
+
+static uint2048_t u2048_MAX_VAL = {
+    .array = {
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
+    },
+    .type = uint2048
+};
+
+uint128_t BigInt_get_u128_MAX() {
+    return u128_MAX_VAL;
+}
+
+uint256_t BigInt_get_u256_MAX() {
+    return u256_MAX_VAL;
+}
+
+uint512_t BigInt_get_u512_MAX() {
+    return u512_MAX_VAL;
+}
+
+uint1024_t BigInt_get_u1024_MAX() {
+    return u1024_MAX_VAL;
+}
+
+uint2048_t BigInt_get_u2048_MAX() {
+    return u2048_MAX_VAL;
+}
+
+
+
+

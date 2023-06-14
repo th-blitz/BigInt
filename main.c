@@ -17,18 +17,12 @@
 int main() {
     
     BigInt bigint = BigIntModule();
-    char* string = "101";
-    uint128_t a = bigint.u128_from_string(string, strlen(string));
 
-    BigInt128_left_shift(&a,8, &a);
+    uint2048_t a = u2048_MAX;
+    uint128_t b = bigint.u128_from_string("340282366920938463463374607431768211455", 39);
 
-    bigint.println(&a, a.type, base_2);
-    bigint.println_hex(&a, a.type, false);
 
-    BigInt128_right_shift(&a, 12, &a);
 
-    bigint.println(&a, a.type, base_2);
-    bigint.println_hex(&a, a.type, false);
     return 0;
 
 }

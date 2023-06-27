@@ -55,7 +55,7 @@ uint32_t BigInt2048_divide_by_n(uint2048_t* a, uint32_t divisor, uint32_t remain
     for (uint8_t i = uint2048; i > 0; i--) {
         remainder_carry <<= 32;
         remainder_carry += (uint64_t)(a -> array[i - 1]);
-        b -> array[i - 1] = (uint32_t)(remainder / divisor);
+        b -> array[i - 1] = (uint32_t)(remainder_carry / divisor);
         remainder_carry %= divisor;
     }
     return (uint32_t)remainder_carry;

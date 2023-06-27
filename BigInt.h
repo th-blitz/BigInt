@@ -119,6 +119,7 @@ typedef struct BigInt {
  
 BigInt BigIntModule();
 
+
 uint128_t BigInt_get_u128_MAX();
 #define u128_MAX BigInt_get_u128_MAX();
 
@@ -133,5 +134,24 @@ uint1024_t BigInt_get_u1024_MAX();
 
 uint2048_t BigInt_get_u2048_MAX();
 #define u2048_MAX BigInt_get_u2048_MAX();
+
+
+
+uint128_t BigInt_get_u128_RAND();
+#define u128_rand() BigInt_get_u128_RAND();
+
+uint256_t BigInt_get_u256_RAND();
+#define u256_rand() BigInt_get_u256_RAND();
+
+uint512_t BigInt_get_u512_RAND();
+#define u512_rand() BigInt_get_u512_RAND();
+
+uint1024_t BigInt_get_u1024_RAND();
+#define u1024_rand() BigInt_get_u1024_RAND();
+
+uint2048_t BigInt_get_u2048_RAND();
+#define u2048_rand() BigInt_get_u2048_RAND();
+
+
 
 #endif
